@@ -1,0 +1,21 @@
+.app {
+  width: 100%;
+}
+
+.app__content {
+  display: flex;
+  height: 100%;
+}
+
+.app__editor {
+  width: 100%;
+  max-width: 45vw;
+  padding: 30px var(--bs-gutter-x, 0.75rem) 0 var(--bs-gutter-x, 0.75rem);
+  box-shadow: 0 0 2px rgb(25 28 43 / 4%), 0 4px 8px hsl(237deg 8% 46% / 16%);
+}
+
+.app__preview {
+  width: 100%;
+  padding-top: 40px;
+  padding-left: 20px;
+}

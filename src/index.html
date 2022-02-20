@@ -1,0 +1,698 @@
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+  crossorigin="anonymous"
+/>
+<link rel="stylesheet" href="css/style.css" />
+
+<script src="https://unpkg.com/vue@3"></script>
+
+<div id="app">
+  <nav class="app__navbar navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"
+        >Email Signature (<small>Beta 1.0</small>)</a
+      >
+    </div>
+  </nav>
+  <div class="app__content">
+    <div class="app__editor">
+      <form>
+        <legend>Signature Details</legend>
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input
+            type="email"
+            class="form-control"
+            id="name"
+            aria-describedby="nameHelp"
+          />
+          <!-- <div id="emailHelp" class="form-text">
+            We'll never share your email with anyone else.
+          </div> -->
+        </div>
+        <!-- <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="exampleInputPassword1"
+          />
+        </div>
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1" />
+          <label class="form-check-label" for="exampleCheck1"
+            >Check me out</label
+          >
+        </div> -->
+        <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+      </form>
+    </div>
+    <div class="app__preview">
+      <table
+        class="main_html"
+        style="direction: ltr; border-collapse: collapse"
+      >
+        <tbody>
+          <tr>
+            <td>
+              <table
+                cellpadding="0"
+                cellspacing="0"
+                class="twr-tpl"
+                style="font-family: Arial; line-height: 1.15; color: #000"
+              >
+                <tbody>
+                  <tr>
+                    <td>
+                      <table
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        style="width: 100%"
+                      >
+                        <tbody>
+                          <tr>
+                            <td
+                              valign="top"
+                              style="vertical-align: top; padding-bottom: 10px"
+                            >
+                              <table
+                                cellpadding="0"
+                                cellspacing="0"
+                                class="twr-tpl-photo"
+                                style="width: 65px"
+                              >
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <img
+                                        :src="orgLogo"
+                                        height="52"
+                                        width="180"
+                                        style="
+                                          width: 180;
+                                          vertical-align: initial;
+                                          border-radius: 4px;
+                                          display: block;
+                                          height: 52px;
+                                        "
+                                      />
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="vertical-align: top" valign="top">
+                      <table
+                        cellpadding="0"
+                        cellspacing="0"
+                        style="width: 100%"
+                      >
+                        <tbody>
+                          <tr>
+                            <td style="padding-bottom: 12px; line-height: 18px">
+                              <span
+                                data-acs="name"
+                                class="twr-tpl-name"
+                                style="
+                                  font-family: Arial;
+                                  text-transform: initial;
+                                  font-weight: bold;
+                                "
+                                ><span style="color: #333; font-size: 16px"
+                                  >{{personName}}
+                                </span></span
+                              >
+                              <span
+                                style="
+                                  font-size: 12px;
+                                  letter-spacing: 0px;
+                                  font-family: Arial;
+                                  text-transform: initial;
+                                  font-weight: normal;
+                                  color: #616263;
+                                "
+                                >&nbsp;<em
+                                  v-html="getPronouns(',', this.pronouns1, pronouns2,
+                              pronouns3)"
+                                ></em></span
+                              ><br />
+                              <span
+                                data-acs="title"
+                                class="twr-tpl-title"
+                                style="
+                                  font-size: 12px;
+                                  letter-spacing: 0px;
+                                  font-family: Arial;
+                                  text-transform: initial;
+                                  font-weight: bold;
+                                  color: #333;
+                                "
+                              >
+                                {{jobTitle}}
+                              </span>
+                              <br />
+                              <span
+                                data-acs="company"
+                                class="twr-tpl-company"
+                                style="
+                                  font-size: 12px;
+                                  letter-spacing: 0px;
+                                  font-family: Arial;
+                                  text-transform: initial;
+                                  font-weight: bold;
+                                  color: #055ea4;
+                                "
+                              >
+                                {{orgName}}
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="line-height: 0">
+                              <table cellpadding="0" cellspacing="0">
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <table cellpadding="0" cellspacing="0">
+                                        <tbody>
+                                          <tr>
+                                            <td
+                                              style="
+                                                line-height: 0%;
+                                                padding-bottom: 6px;
+                                              "
+                                            >
+                                              <table
+                                                class="twr-tpl-phone"
+                                                cellpadding="0"
+                                                cellspacing="0"
+                                                style="
+                                                  line-height: 14px;
+                                                  font-size: 12px;
+                                                  font-family: Arial;
+                                                "
+                                              >
+                                                <tbody>
+                                                  <tr>
+                                                    <td
+                                                      style="
+                                                        color-scheme: light only;
+                                                        font-family: Arial;
+                                                        font-weight: bold;
+                                                        font-size: 12px;
+                                                        color: #45668e;
+                                                      "
+                                                    >
+                                                      <img
+                                                        src="https://www.thewritingrevolution.org/img/email/v1/phone.png"
+                                                        style="
+                                                          vertical-align: -2px;
+                                                          line-height: 1.2;
+                                                        "
+                                                      />
+                                                    </td>
+                                                    <td
+                                                      style="
+                                                        width: 5px;
+                                                        font-size: 1pt;
+                                                        line-height: 0;
+                                                      "
+                                                      width="5"
+                                                    >
+                                                      &nbsp;
+                                                    </td>
+                                                    <td
+                                                      style="
+                                                        color-scheme: light only;
+                                                        font-family: Arial;
+                                                        font-size: 12px;
+                                                      "
+                                                    >
+                                                      <a
+                                                        href="tel:19999999999"
+                                                        target="_blank"
+                                                        style="
+                                                          color-scheme: light
+                                                            only;
+                                                          text-decoration: none;
+                                                          font-size: 12px;
+                                                          font-family: Arial;
+                                                        "
+                                                      >
+                                                        <span
+                                                          data-acs="phone"
+                                                          style="
+                                                            line-height: 1.2;
+                                                            color-scheme: light
+                                                              only;
+                                                            color: #212121;
+                                                            font-family: Arial;
+                                                            white-space: nowrap;
+                                                            font-size: 12px;
+                                                          "
+                                                        >
+                                                          {{mainPhoneNum}}
+                                                        </span>
+                                                      </a>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </td>
+                                            <td
+                                              style="
+                                                line-height: 0%;
+                                                padding-bottom: 6px;
+                                              "
+                                            >
+                                              <table
+                                                class="twr-tpl-website"
+                                                cellpadding="0"
+                                                cellspacing="0"
+                                                style="
+                                                  line-height: 14px;
+                                                  font-size: 12px;
+                                                  font-family: Arial;
+                                                "
+                                              >
+                                                <tbody>
+                                                  <tr>
+                                                    <td style="padding: 0 6px">
+                                                      <span
+                                                        style="
+                                                          color-scheme: light
+                                                            only;
+                                                          font-family: Arial;
+                                                          font-weight: bold;
+                                                          font-size: 12px;
+                                                          color: #212121;
+                                                        "
+                                                      >
+                                                      </span>
+                                                    </td>
+                                                    <td
+                                                      style="
+                                                        color-scheme: light only;
+                                                        font-family: Arial;
+                                                        font-weight: bold;
+                                                        font-size: 12px;
+                                                        color: #45668e;
+                                                      "
+                                                    >
+                                                      <img
+                                                        src="https://www.thewritingrevolution.org/img/email/v1/site.png"
+                                                        style="
+                                                          vertical-align: -2px;
+                                                          line-height: 1.2;
+                                                        "
+                                                      />
+                                                    </td>
+                                                    <td
+                                                      style="
+                                                        width: 5px;
+                                                        font-size: 1pt;
+                                                        line-height: 0;
+                                                      "
+                                                      width="5"
+                                                    >
+                                                      &nbsp;
+                                                    </td>
+                                                    <td
+                                                      style="
+                                                        color-scheme: light only;
+                                                        font-family: Arial;
+                                                        font-size: 12px;
+                                                      "
+                                                    >
+                                                      <a
+                                                        href="http://thewritingrevolution.org"
+                                                        target="_blank"
+                                                        style="
+                                                          color-scheme: light
+                                                            only;
+                                                          text-decoration: none;
+                                                          font-size: 12px;
+                                                          font-family: Arial;
+                                                        "
+                                                      >
+                                                        <span
+                                                          data-acs="website"
+                                                          style="
+                                                            line-height: 1.2;
+                                                            color-scheme: light
+                                                              only;
+                                                            color: #212121;
+                                                            font-family: Arial;
+                                                            white-space: nowrap;
+                                                            font-size: 12px;
+                                                          "
+                                                        >
+                                                          {{website}}
+                                                        </span>
+                                                      </a>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <table cellpadding="0" cellspacing="0">
+                                        <tbody>
+                                          <tr>
+                                            <td
+                                              style="
+                                                line-height: 0%;
+                                                padding-bottom: 6px;
+                                              "
+                                            >
+                                              <table
+                                                class="twr-tpl-email"
+                                                cellpadding="0"
+                                                cellspacing="0"
+                                                style="
+                                                  line-height: 14px;
+                                                  font-size: 12px;
+                                                  font-family: Arial;
+                                                "
+                                              >
+                                                <tbody>
+                                                  <tr>
+                                                    <td
+                                                      style="
+                                                        color-scheme: light only;
+                                                        font-family: Arial;
+                                                        font-weight: bold;
+                                                        font-size: 12px;
+                                                        color: #45668e;
+                                                      "
+                                                    >
+                                                      <img
+                                                        src="https://www.thewritingrevolution.org/img/email/v1/email.png"
+                                                        style="
+                                                          vertical-align: -2px;
+                                                          line-height: 1.2;
+                                                        "
+                                                      />
+                                                    </td>
+                                                    <td
+                                                      style="
+                                                        width: 5px;
+                                                        font-size: 1pt;
+                                                        line-height: 0;
+                                                      "
+                                                      width="5"
+                                                    >
+                                                      &nbsp;
+                                                    </td>
+                                                    <td
+                                                      style="
+                                                        color-scheme: light only;
+                                                        font-family: Arial;
+                                                        font-size: 12px;
+                                                      "
+                                                    >
+                                                      <a
+                                                        href="mailto:email@thewritingrevolution.org"
+                                                        target="_blank"
+                                                        style="
+                                                          color-scheme: light
+                                                            only;
+                                                          text-decoration: none;
+                                                          font-size: 12px;
+                                                          font-family: Arial;
+                                                        "
+                                                      >
+                                                        <span
+                                                          data-acs="email"
+                                                          style="
+                                                            line-height: 1.2;
+                                                            color-scheme: light
+                                                              only;
+                                                            color: #212121;
+                                                            font-family: Arial;
+                                                            white-space: nowrap;
+                                                            font-size: 12px;
+                                                          "
+                                                        >
+                                                          {{email}}
+                                                        </span>
+                                                      </a>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <table cellpadding="0" cellspacing="0">
+                                        <tbody>
+                                          <tr>
+                                            <td
+                                              style="
+                                                line-height: 0%;
+                                                padding-bottom: 6px;
+                                              "
+                                            >
+                                              <table
+                                                class="twr-tpl-address"
+                                                cellpadding="0"
+                                                cellspacing="0"
+                                                style="
+                                                  line-height: 14px;
+                                                  font-size: 12px;
+                                                  font-family: Arial;
+                                                "
+                                              >
+                                                <tbody>
+                                                  <tr>
+                                                    <td
+                                                      style="
+                                                        color-scheme: light only;
+                                                        font-family: Arial;
+                                                        font-weight: bold;
+                                                        font-size: 12px;
+                                                        color: #45668e;
+                                                      "
+                                                    >
+                                                      <img
+                                                        src="https://www.thewritingrevolution.org/img/email/v1/address.png"
+                                                        style="
+                                                          vertical-align: -2px;
+                                                          line-height: 1.2;
+                                                        "
+                                                      />
+                                                    </td>
+                                                    <td
+                                                      style="
+                                                        width: 5px;
+                                                        font-size: 1pt;
+                                                        line-height: 0;
+                                                      "
+                                                      width="5"
+                                                    >
+                                                      &nbsp;
+                                                    </td>
+                                                    <td
+                                                      style="
+                                                        color-scheme: light only;
+                                                        font-family: Arial;
+                                                        font-size: 12px;
+                                                      "
+                                                    >
+                                                      <a
+                                                        href="https://maps.google.com/?q=90 Broad Street, 3rd Floor, New York, NY 10004"
+                                                        target="_blank"
+                                                        style="
+                                                          color-scheme: light
+                                                            only;
+                                                          text-decoration: none;
+                                                          font-size: 12px;
+                                                          font-family: Arial;
+                                                        "
+                                                      >
+                                                        <span
+                                                          data-acs="address"
+                                                          style="
+                                                            line-height: 1.2;
+                                                            color-scheme: light
+                                                              only;
+                                                            color: #212121;
+                                                            font-family: Arial;
+                                                            white-space: nowrap;
+                                                            font-size: 12px;
+                                                          "
+                                                        >
+                                                          {{addrLine1}},
+                                                          {{addrLine2}} {{city}}
+                                                          {{state}} {{zip}}
+                                                        </span>
+                                                      </a>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding-top: 12px">
+                              <table
+                                class="twr-tpl-social"
+                                cellpadding="0"
+                                cellspacing="0"
+                                style="width: 100%"
+                              >
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <table
+                                        border="0"
+                                        cellpadding="0"
+                                        cellspacing="0"
+                                      >
+                                        <tbody>
+                                          <tr>
+                                            <td
+                                              align="left"
+                                              style="
+                                                padding-right: 6px;
+                                                text-align: center;
+                                                padding-top: 0;
+                                              "
+                                            >
+                                              <a
+                                                href="https://www.facebook.com/TheWritingRevolution/"
+                                                target="_blank"
+                                              >
+                                                <img
+                                                  width="24"
+                                                  height="24"
+                                                  src="https://www.thewritingrevolution.org/img/email/v1/social_fb.png"
+                                                  style="
+                                                    float: left;
+                                                    border: none;
+                                                  "
+                                                  border="0"
+                                                />
+                                              </a>
+                                            </td>
+                                            <td
+                                              align="left"
+                                              style="
+                                                padding-right: 6px;
+                                                text-align: center;
+                                                padding-top: 0;
+                                              "
+                                            >
+                                              <a
+                                                href="https://twitter.com/TheWritingRevol?lang=en"
+                                                target="_blank"
+                                              >
+                                                <img
+                                                  width="24"
+                                                  height="24"
+                                                  src="https://www.thewritingrevolution.org/img/email/v1/social_tw.png"
+                                                  style="
+                                                    float: left;
+                                                    border: none;
+                                                  "
+                                                  border="0"
+                                                />
+                                              </a>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <table
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="max-width: 600px; width: 100%"
+              >
+                <tbody>
+                  <tr>
+                    <td style="line-height: 0"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  Vue.createApp({
+    data() {
+      return {
+        personName: "Full Name",
+        pronouns1: "Pronoun",
+        pronouns2: "Pronoun",
+        pronouns3: "Pronoun",
+        jobTitle: "Job title",
+        orgName: "The Writing Revolution",
+        orgLogo:
+          "http://www.thewritingrevolution.org/img/twr-logo_color_250x72.png",
+        mainPhoneNum: "+1 999.999.9999",
+        website: "thewritingrevolution.org",
+        email: "email@thewritingrevolution.org",
+        addrLine1: "90 Broad Street",
+        addrLine2: "3rd Floor",
+        city: "New York",
+        state: "NY",
+        zip: "10004",
+      };
+    },
+    methods: {
+      // get pronoun values and join by given separator
+      getPronouns(separator, ...args) {
+        return `(${args
+          .map((str) => {
+            return str.toLowerCase();
+          })
+          .join(separator + " ")}) `;
+      },
+    },
+  }).mount("#app");
+</script>
