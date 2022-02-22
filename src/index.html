@@ -34,36 +34,48 @@
           </div> -->
         </div>
         <div class="mb-3">
-          <TransitionGroup name="fade">
-            <label for="pronoun" class="form-label">Pronouns</label>
-            <div
-              class="row mb-1"
-              v-for="(pronoun, id, index) in pronouns"
-              :key="pronoun"
-            >
-              <div class="col-8">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="pronoun"
-                  aria-describedby="pronounHelp"
-                  v-model="pronoun.text"
-                />
-              </div>
-              <div class="d-flex col-4 pl-0" :v-show="index == pronouns.length">
-                <span
-                  class="btn btn-secondary btn-sm btn-dynamic"
-                  @click="insertPronoun(pronoun.text)"
-                  >+</span
-                >
-                <span
-                  class="btn btn-secondary btn-sm btn-dynamic"
-                  @click="removePronoun(pronoun.id)"
-                  >-</span
-                >
-              </div>
+          <!-- <TransitionGroup name="fade"> -->
+          <label for="pronoun" class="form-label">Pronouns </label>
+          <label class="m-2"
+            ><input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="disable-pronoun-chbx"
+              v-model="disablePronouns"
+            />
+            Hide Pronoun(s)?</label
+          >
+          <div
+            class="row mb-1"
+            :class="{'d-none': disablePronouns }"
+            v-for="(pronoun, index) in pronouns"
+            :key="index"
+          >
+            <div class="col-8">
+              <input
+                type="text"
+                class="form-control"
+                :id="'pronoun-' + index"
+                aria-describedby="pronounHelp"
+                v-model="pronoun.text"
+              />
             </div>
-          </TransitionGroup>
+            <div class="d-flex col-4 pl-0">
+              <span
+                class="btn btn-secondary btn-sm btn-dynamic"
+                @click="insertPronoun(pronoun.text)"
+                >+</span
+              >
+              <span
+                class="btn btn-secondary btn-sm btn-dynamic"
+                @click="removePronoun(pronoun.id)"
+                v-if="pronouns.length > 1"
+                >-</span
+              >
+            </div>
+          </div>
+          <!-- </TransitionGroup> -->
           <!-- <div id="emailHelp" class="form-text">
             We'll never share your email with anyone else.
           </div> -->
@@ -713,7 +725,8 @@
     data() {
       return {
         personName: "Full Name",
-        pronouns: [{ id: 1, text: "Pronoun" }],
+        pronouns: [{ id: 1, text: "pronoun" }],
+        disablePronouns: false,
         jobTitle: "Job title",
         orgName: "The Writing Revolution",
         orgLogo:
@@ -746,17 +759,26 @@
       // get pronoun values and join by given separator
       getPronouns(separator) {
         const args = this.pronouns;
-        if (args.length < 1) {
+
+        // hide pronouns are checked
+        if (this.disablePronouns) {
           return "";
-        } else {
-          return `(${args
-            .map((str) => {
-              // index needed due to proxy from spread
-              return str.text.toLowerCase();
-              // console.log(str[index].text.toLowerCase());
-            })
-            .join(separator + " ")}) `;
         }
+
+        // handle if no pronouns are provided
+        if (args.length == 1) {
+          if (args[0].text == "") {
+            return "";
+          }
+        }
+
+        return `(${args
+          .map((str) => {
+            // index needed due to proxy from spread
+            return str.text.toLowerCase();
+            // console.log(str[index].text.toLowerCase());
+          })
+          .join(separator + " ")}) `;
       },
     },
   }).mount("#app");
