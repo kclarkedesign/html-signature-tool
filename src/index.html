@@ -35,7 +35,7 @@
         </div>
         <div class="mb-3">
           <!-- <TransitionGroup name="fade"> -->
-          <label for="pronoun" class="form-label">Pronouns </label>
+          <label for="pronoun-0" class="form-label">Pronouns </label>
           <label class="m-2"
             ><input
               class="form-check-input"
@@ -61,7 +61,7 @@
                 v-model="pronoun.text"
               />
             </div>
-            <div class="d-flex col-4 pl-0">
+            <div class="d-flex col-4 p-0">
               <span
                 class="btn btn-secondary btn-sm btn-dynamic"
                 @click="insertPronoun(pronoun.text)"
@@ -81,13 +81,39 @@
           </div> -->
         </div>
         <div class="mb-3">
-          <label for="name" class="form-label">Job Title</label>
+          <label for="job-title" class="form-label">Job Title</label>
           <input
             type="text"
             class="form-control"
             id="job-title"
             aria-describedby="jobTitleHelp"
             v-model="jobTitle"
+          />
+          <!-- <div id="emailHelp" class="form-text">
+            We'll never share your email with anyone else.
+          </div> -->
+        </div>
+        <div class="mb-3">
+          <label for="main-phone" class="form-label">Phone</label>
+          <input
+            type="tel"
+            class="form-control"
+            id="main-phone"
+            aria-describedby="mainPhoneNumHelp"
+            v-model="mainPhoneNum"
+          />
+          <!-- <div id="emailHelp" class="form-text">
+            We'll never share your email with anyone else.
+          </div> -->
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            aria-describedby="emailHelp"
+            v-model="email"
           />
           <!-- <div id="emailHelp" class="form-text">
             We'll never share your email with anyone else.
@@ -296,7 +322,7 @@
                                                       "
                                                     >
                                                       <a
-                                                        href="tel:19999999999"
+                                                        :href="`tel:${mainPhoneNum}`"
                                                         target="_blank"
                                                         style="
                                                           color-scheme: light
@@ -485,7 +511,7 @@
                                                       "
                                                     >
                                                       <a
-                                                        href="mailto:email@thewritingrevolution.org"
+                                                        :href="`mailto:${email}`"
                                                         target="_blank"
                                                         style="
                                                           color-scheme: light
