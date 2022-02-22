@@ -773,11 +773,11 @@
         this.pronouns.push({ id: this.pronouns.length + 1, text: "pronoun" });
       },
       removePronoun(id) {
-        // get matching pronoun id
+        // get matching pronoun id and find index of object in pronoun array
         const i = this.pronouns.findIndex((pronoun) => {
           return pronoun.id == id;
         });
-
+        // if found, remove it
         if (i > -1) {
           this.pronouns.splice(i, 1);
         }
@@ -792,10 +792,8 @@
         }
 
         // handle if no pronouns are provided
-        if (args.length == 1) {
-          if (args[0].text == "") {
-            return "";
-          }
+        if (args.length == 1 && args[0].text == "") {
+          return "";
         }
 
         return `(${args
