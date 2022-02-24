@@ -780,6 +780,7 @@
     methods: {
       insertPronoun(value) {
         // add new pronoun
+        // TODO: will update to look at index so it inserts it at the right index instead of end of array
         this.pronouns.push({ id: this.pronouns.length + 1, text: "pronoun" });
       },
       removePronoun(id) {
