@@ -214,7 +214,7 @@
                                   text-transform: initial;
                                   font-weight: bold;
                                 "
-                                v-if="personName.length != 0"
+                                v-if="hasName"
                                 ><span style="color: #333; font-size: 16px"
                                   >{{personName}}
                                 </span></span
@@ -228,10 +228,12 @@
                                   font-weight: normal;
                                   color: #616263;
                                 "
-                                v-if="(pronouns[0].text.length > 0) || (disablePronouns == false)"
-                                >&nbsp;
+                                v-if="hasPronouns || (disablePronouns == false)"
+                              >
                                 <em v-html="getPronouns(',')"></em></span
-                              ><br />
+                              ><br
+                                v-if="hasName || hasPronouns && disablePronouns == false"
+                              />
                               <span
                                 data-acs="title"
                                 class="twr-tpl-title"
@@ -804,13 +806,28 @@
           return "";
         }
 
-        return `(${args
+        if (args.every((item) => item.text == "")) {
+          return "";
+        }
+
+        return `${this.hasName ? "&nbsp;" : ""}(${args
           .map((str) => {
             // index needed due to proxy from spread
             return str.text.toLowerCase();
             // console.log(str[index].text.toLowerCase());
           })
           .join(separator + " ")}) `;
+      },
+    },
+    computed: {
+      hasName() {
+        return this.personName.length != 0;
+      },
+      hasPronouns() {
+        const containsPronoun = this.pronouns.some(
+          (item) => item.text.length != 0
+        );
+        return this.pronouns.length > 0 && containsPronoun;
       },
     },
   }).mount("#app");
