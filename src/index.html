@@ -214,6 +214,7 @@
                                   text-transform: initial;
                                   font-weight: bold;
                                 "
+                                v-if="personName.length != 0"
                                 ><span style="color: #333; font-size: 16px"
                                   >{{personName}}
                                 </span></span
@@ -227,7 +228,9 @@
                                   font-weight: normal;
                                   color: #616263;
                                 "
-                                >&nbsp;<em v-html="getPronouns(',')"></em></span
+                                v-if="(pronouns[0].text.length > 0) || (disablePronouns == false)"
+                                >&nbsp;
+                                <em v-html="getPronouns(',')"></em></span
                               ><br />
                               <span
                                 data-acs="title"
