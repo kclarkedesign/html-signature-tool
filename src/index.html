@@ -66,7 +66,7 @@
             <div class="d-flex col-4 p-0">
               <span
                 class="btn btn-secondary btn-sm btn-dynamic"
-                @click="insertPronoun(pronoun.text)"
+                @click="insertPronoun(index)"
                 >+</span
               >
               <span
@@ -768,7 +768,8 @@
     data() {
       return {
         personName: "Full Name",
-        pronouns: [{ id: 1, text: "pronoun" }],
+        pronouns: [{ id: 0, text: "pronoun" }],
+        pronounIdIncrement: 0,
         disablePronouns: false,
         jobTitle: "Job title",
         orgName: "The Writing Revolution",
@@ -785,10 +786,14 @@
       };
     },
     methods: {
-      insertPronoun(value) {
-        // add new pronoun
-        // TODO: will update to look at index so it inserts it at the right index instead of end of array
-        this.pronouns.push({ id: this.pronouns.length + 1, text: "pronoun" });
+      insertPronoun(index) {
+        // add new pronoun and pronoun increment id
+        let increment = this.pronounIdIncrement + 1;
+        this.pronouns.splice(index + 1, 0, {
+          id: increment,
+          text: "pronoun",
+        });
+        this.pronounIdIncrement = increment;
       },
       removePronoun(id) {
         // get matching pronoun id and find index of object in pronoun array
