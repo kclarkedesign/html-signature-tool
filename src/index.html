@@ -9,14 +9,16 @@
 <script src="https://unpkg.com/vue@3"></script>
 
 <div id="app">
-  <nav class="app__navbar navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#"
-        >Email Signature (<small>Beta 1.0</small>)</a
-      >
-    </div>
-  </nav>
-  <div class="app__content">
+  <header>
+    <nav class="app__navbar navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#"
+          >Email Signature (<small>Beta 1.0</small>)</a
+        >
+      </div>
+    </nav>
+  </header>
+  <main class="app__content">
     <div class="app__editor">
       <form>
         <legend>Signature Details</legend>
@@ -753,7 +755,12 @@
         </tbody>
       </table>
     </div>
-  </div>
+  </main>
+  <footer class="footer mt-auto py-3 bg-dark">
+    <div class="container text-center">
+      <span class="text-muted">© 2009 - 2021 Kirk Clarke</span>
+    </div>
+  </footer>
 </div>
 
 <script>
