@@ -596,6 +596,7 @@
           console.log('copied!');
           // needed to prevent browser from overriding clipboard
           e.preventDefault();
+          document.removeEventListener('copy', this.getHTMLSignature)
         },
         insertPronoun(index) {
           // add new pronoun and pronoun increment id
