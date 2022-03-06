@@ -590,13 +590,25 @@
           document.execCommand('copy');
         },
         getHTMLSignature(e) {
+
           const clipboardData = e.clipboardData || window.clipboardData || e.originalEvent.clipboardData;
           const htmlData = document.querySelector('.main__html').outerHTML
           clipboardData.setData('text/html', htmlData);
-          console.log('copied!');
           // needed to prevent browser from overriding clipboard
           e.preventDefault();
+          this.handleCopyToClipboardBtn();
           document.removeEventListener('copy', this.getHTMLSignature)
+        },
+        handleCopyToClipboardBtn() {
+          const copiedTxt = 'Copied!'
+          const defaultBtn = document.getElementById('ctc-btn');
+          const defaultBtnText = defaultBtn.innerText;
+          defaultBtn.innerText = copiedTxt;
+          defaultBtn.classList.add('btn-success');
+          setTimeout(() => {
+            defaultBtn.innerText = defaultBtnText;
+            defaultBtn.classList.remove('btn-success');
+          }, 2000);
         },
         insertPronoun(index) {
           // add new pronoun and pronoun increment id

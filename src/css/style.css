@@ -48,6 +48,16 @@
   align-items: center;
 }
 
+.copy__controls {
+  min-width: 25%;
+  text-align: right;
+}
+
+.copy__controls .btn-copy {
+  width: 100%;
+  max-width: 155px;
+}
+
 /* 1. declare transition */
 .fade-move,
 .fade-enter-active,
