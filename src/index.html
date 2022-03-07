@@ -596,6 +596,7 @@
           // add event listener copy then trigger copy event
           document.addEventListener('copy', this.getHTMLSignature)
           document.execCommand('copy');
+          // TODO: setup newer clipboard async https://www.nikouusitalo.com/blog/why-isnt-clipboard-write-copying-my-richtext-html/
           // if (this.detectMobile) {
           //   const htmlData = document.querySelector('.main__html').outerHTML;
           //   navigator.clipboard.write(htmlData)
