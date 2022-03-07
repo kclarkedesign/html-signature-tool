@@ -584,15 +584,34 @@
         };
       },
       methods: {
+        detectMobile() {
+          let isMobile = false;
+          const isScreenMobile = window.matchMedia("only screen and (max-width: 760px)");
+          if (/Mobi|Tablet|iPad|iPhone/i.test(navigator.userAgent) || isScreenMobile.matches) {
+            isMobile = true
+          }
+          return isMobile;
+        },
         handleCopyToClipboard(event) {
           // add event listener copy then trigger copy event
           document.addEventListener('copy', this.getHTMLSignature)
           document.execCommand('copy');
+          // if (this.detectMobile) {
+          //   const htmlData = document.querySelector('.main__html').outerHTML;
+          //   navigator.clipboard.write(htmlData)
+          //     .then
+          // } else {
+          //   // add event listener copy then trigger copy event
+          //   document.addEventListener('copy', this.getHTMLSignature)
+          //   document.execCommand('copy');
+          // }
         },
         getHTMLSignature(e) {
-
           const clipboardData = e.clipboardData || window.clipboardData || e.originalEvent.clipboardData;
-          const htmlData = document.querySelector('.main__html').outerHTML
+          // need HTML and Plain text as fallback (Chrome Android 97.0.4692.98)
+          const htmlData = document.querySelector('.main__html').outerHTML;
+          const plainData = document.querySelector('.app__preview').innerText;
+          clipboardData.setData('text/plain', plainData);
           clipboardData.setData('text/html', htmlData);
           // needed to prevent browser from overriding clipboard
           e.preventDefault();
