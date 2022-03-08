@@ -42,7 +42,7 @@
               :key="index">
               <div class="col-8">
                 <input type="text" class="form-control" :id="'pronoun-' + index" aria-describedby="pronounHelp"
-                  v-model="pronoun.text" />
+                  @focus="handleFocus($event, pronoun.text)" v-model="pronoun.text" />
               </div>
               <div class="d-flex col-4 p-0">
                 <span class="btn btn-secondary btn-sm btn-dynamic" @click="insertPronoun(index)">+</span>
@@ -57,22 +57,24 @@
           </div>
           <div class="mb-3">
             <label for="job-title" class="form-label">Job Title</label>
-            <input type="text" class="form-control" id="job-title" aria-describedby="jobTitleHelp" v-model="jobTitle" />
+            <input @focus="handleFocus($event, jobTitle)" type="text" class="form-control" id="job-title"
+              aria-describedby="jobTitleHelp" v-model="jobTitle" />
             <!-- <div id="emailHelp" class="form-text">
             We'll never share your email with anyone else.
           </div> -->
           </div>
           <div class="mb-3">
             <label for="main-phone" class="form-label">Phone</label>
-            <input type="tel" class="form-control" id="main-phone" aria-describedby="mainPhoneNumHelp"
-              v-model="mainPhoneNum" />
+            <input @focus="handleFocus($event, mainPhoneNum)" type="tel" class="form-control" id="main-phone"
+              aria-describedby="mainPhoneNumHelp" v-model="mainPhoneNum" />
             <!-- <div id="emailHelp" class="form-text">
             We'll never share your email with anyone else.
           </div> -->
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" v-model="email" />
+            <input @focus="handleFocus($event, email)" type="email" class="form-control" id="email"
+              aria-describedby="emailHelp" v-model="email" />
             <!-- <div id="emailHelp" class="form-text">
             We'll never share your email with anyone else.
           </div> -->
