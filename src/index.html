@@ -588,8 +588,6 @@
       },
       methods: {
         handleFocus(event, val) {
-          console.log(event);
-          console.log(val);
           event.target.select();
         },
         detectMobile() {
@@ -601,31 +599,40 @@
           return isMobile;
         },
         handleCopyToClipboard(event) {
-          // add event listener copy then trigger copy event
-          document.addEventListener('copy', this.getHTMLSignature)
-          document.execCommand('copy');
-          // TODO: setup newer clipboard async https://www.nikouusitalo.com/blog/why-isnt-clipboard-write-copying-my-richtext-html/
-          // if (this.detectMobile) {
-          //   const htmlData = document.querySelector('.main__html').outerHTML;
-          //   navigator.clipboard.write(htmlData)
-          //     .then
-          // } else {
-          //   // add event listener copy then trigger copy event
-          //   document.addEventListener('copy', this.getHTMLSignature)
-          //   document.execCommand('copy');
-          // }
+          if (this.detectMobile || navigator.clipboard) {
+            this.getHTMLSignature(event);
+          } else {
+            // add event listener copy then trigger copy event
+            document.addEventListener('copy', this.getHTMLSignature)
+            document.execCommand('copy');
+          }
         },
         getHTMLSignature(e) {
-          const clipboardData = e.clipboardData || window.clipboardData || e.originalEvent.clipboardData;
+          // needed to prevent browser from overriding clipboard
+          e.preventDefault();
           // need HTML and Plain text as fallback (Chrome Android 97.0.4692.98)
           const htmlData = document.querySelector('.main__html').outerHTML;
           const plainData = document.querySelector('.app__preview').innerText;
-          clipboardData.setData('text/plain', plainData);
-          clipboardData.setData('text/html', htmlData);
-          // needed to prevent browser from overriding clipboard
-          e.preventDefault();
+          // setup newer clipboard async https://www.nikouusitalo.com/blog/why-isnt-clipboard-write-copying-my-richtext-html/
+          if (e.target.id === 'ctc-btn') {
+            const clipboardItem = new ClipboardItem({
+              "text/plain": new Blob(
+                [plainData],
+                { type: "text/plain" }
+              ),
+              "text/html": new Blob(
+                [htmlData],
+                { type: "text/html" }
+              ),
+            });
+            navigator.clipboard.write([clipboardItem]);
+          } else {
+            const clipboardData = e.clipboardData || window.clipboardData || e.originalEvent.clipboardData;
+            clipboardData.setData('text/plain', plainData);
+            clipboardData.setData('text/html', htmlData);
+            document.removeEventListener('copy', this.getHTMLSignature);
+          }
           this.handleCopyToClipboardBtn();
-          document.removeEventListener('copy', this.getHTMLSignature)
         },
         handleCopyToClipboardBtn() {
           const copiedTxt = 'Copied!'
@@ -670,7 +677,6 @@
           if (args.length == 1 && args[0].text == "") {
             return "";
           }
-
           if (args.every((item) => item.text == "")) {
             return "";
           }
