@@ -77,3 +77,18 @@
 .fade-leave-active {
   position: absolute;
 }
+
+/* Google Auth */
+.gacct-user-avatar {
+  padding: 0;
+  border-radius: 50%;
+  max-width: 32px;
+  margin-top: -10px;
+  margin-left: 10px;
+  margin-bottom: -10px;
+  transition: 0.3s ease-in-out border;
+  border: 3px solid transparent;
+}
+a:hover .gacct-user-avatar {
+  border: 3px solid #fff;
+}

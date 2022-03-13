@@ -11,6 +11,8 @@
   <script>
     window.onload = function () {
       const signInWithBtn = window.signInWithBtn = document.getElementById("g-siw_btn");
+      const signOutBtn = window.signOutBtn = document.getElementById('gacct-user-signout');
+      console.log(signOutBtn)
       google.accounts.id.initialize({
         client_id: "97253561804-8f9al1lntf06qqivh426fqbj9vp24ke0.apps.googleusercontent.com",
         callback: handleCredentialResponse,
@@ -27,6 +29,7 @@
       }); // also display the One Tap dialog
 
       handleAuth();
+      signOutBtn.addEventListener('click', handleSignout);
     }
   </script>
   <script src="https://unpkg.com/vue@3"></script>
@@ -37,28 +40,18 @@
     <header>
       <nav class="app__navbar navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Email Signature (<small>Beta 1.0</small>)</a>
-          <ul class="navbar-nav mr-auto">
+          <a class="navbar-brand" href="#">Email Signature (<small>Beta 1.5.0</small>)</a>
+          <ul class="navbar-nav me-auto mb-lg-0">
             <li class="nav-item">
               <div id="g-siw_btn"></div>
             </li>
-          </ul>
-          <ul class="navbar-nav">
             <li class="nav-item">
-              <span id="gacct-user" class="nav-link"></span>
-              <!-- <div id="g_id_onload"
-                data-client_id="97253561804-8f9al1lntf06qqivh426fqbj9vp24ke0.apps.googleusercontent.com"
-                data-login_uri="https://kirkclarke.com/html-signature-tool/" data-callback="handleCredentialResponse"
-                data-auto_prompt="false">
-              </div>
-              <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline"
-                data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left">
-              </div> -->
-              <!-- <div id="g_id_onload"
-                data-client_id="97253561804-8f9al1lntf06qqivh426fqbj9vp24ke0.apps.googleusercontent.com"
-                data-login_uri="https://kirkclarke.com/html-signature-tool/">
-              </div> -->
+              <span id="gacct-user" class="navbar-text"></span>
             </li>
+          </ul>
+
+          <ul class="navbar-nav">
+            <li class="nav-item"><a id="gacct-user-signout" href="#" class="nav-link" style="display: none;"></a></li>
           </ul>
         </div>
       </nav>
@@ -624,31 +617,59 @@
     };
 
     function handleCredentialResponse(response) {
-      console.log(response)
+      // console.log(response)
       const responsePayload = window.identity = parseJwt(response.credential);
       console.log(responsePayload);
-      // console.log("Email: " + responsePayload.email);
+
       // TODO: need to validate --> https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
       if (responsePayload.email_verified) {
         window.isAuthenticated = true;
         handleAuth();
       }
+    }
 
+    function initClient() {
+      gapi.client.init({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES
+      }).then(function () {
+        // Listen for sign-in state changes.        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+
+        // Handle the initial sign-in state.          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+
+      }, function (error) {
+        appendPre(JSON.stringify(error, null, 2));
+      });
     }
 
     function handleAuth() {
+      const authUserTxt = document.getElementById('gacct-user');
       if (window.isAuthenticated) {
         console.log("Authenticated!")
         window.signInWithBtn.style.setProperty('display', 'none');
-        document.getElementById('gacct-user').innerText = `Hey ${window.identity
-          .given_name} (${window.identity
-            .email})`;
+        window.signOutBtn.style.setProperty('display', 'block');
+        window.signOutBtn.innerHTML = `${window.identity
+          .email} (Sign Out) <img class="gacct-user-avatar" src="${window.identity.picture}" alt="${window.identity
+            .email}">`;
+        authUserTxt.innerHTML = `Hey ${window.identity
+          .given_name}!`;
+
+        gapi.load('client', initClient);
       } else {
         console.log("Not Authenticated!")
+        window.signInWithBtn.style.setProperty('display', 'block');
+        window.signOutBtn.style.setProperty('display', 'none');
+        authUserTxt.innerText = "";
       }
-
     }
 
+    function handleSignout() {
+      google.accounts.id.disableAutoSelect();
+      window.isAuthenticated = false;
+      handleAuth()
+    }
 
     Vue.createApp({
       data() {
@@ -789,6 +810,9 @@
       },
     }).mount("#app");
   </script>
+  <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
+    onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
 </body>
 
 </html>
