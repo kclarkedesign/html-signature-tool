@@ -8,6 +8,27 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    window.onload = function () {
+      const signInWithBtn = window.signInWithBtn = document.getElementById("g-siw_btn");
+      google.accounts.id.initialize({
+        client_id: "97253561804-8f9al1lntf06qqivh426fqbj9vp24ke0.apps.googleusercontent.com",
+        callback: handleCredentialResponse,
+        auto_select: true,
+        cancel_on_tap_outside: false,
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById("g-siw_btn"),
+        { theme: "outline", size: "large" }  // customization attributes
+      );
+      google.accounts.id.prompt((notification) => {
+        console.log(notification)
+      }); // also display the One Tap dialog
+
+      handleAuth();
+    }
+  </script>
   <script src="https://unpkg.com/vue@3"></script>
 </head>
 
@@ -17,16 +38,22 @@
       <nav class="app__navbar navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Email Signature (<small>Beta 1.0</small>)</a>
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <div id="g-siw_btn"></div>
+            </li>
+          </ul>
           <ul class="navbar-nav">
             <li class="nav-item">
-              <div id="g_id_onload"
+              <span id="gacct-user" class="nav-link"></span>
+              <!-- <div id="g_id_onload"
                 data-client_id="97253561804-8f9al1lntf06qqivh426fqbj9vp24ke0.apps.googleusercontent.com"
                 data-login_uri="https://kirkclarke.com/html-signature-tool/" data-callback="handleCredentialResponse"
                 data-auto_prompt="false">
               </div>
               <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline"
                 data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left">
-              </div>
+              </div> -->
               <!-- <div id="g_id_onload"
                 data-client_id="97253561804-8f9al1lntf06qqivh426fqbj9vp24ke0.apps.googleusercontent.com"
                 data-login_uri="https://kirkclarke.com/html-signature-tool/">
@@ -40,6 +67,7 @@
       <div class="app__editor">
         <form>
           <legend>Signature Details</legend>
+
           <div class="mb-3">
             <label for="name" class="form-label">Name</label>
             <input @focus="handleFocus($event, personName)" type="text" class="form-control" id="name"
@@ -582,13 +610,8 @@
 
   <script>
     // https://stackoverflow.com/a/38552302/3623472
+    // also see -> https://googleonetap.developer.li/assets/js/utils.js and https://stackoverflow.com/a/47574303/4064162
     // consider using JWT decoder
-
-    function handleCredentialResponse(response) {
-      const responsePayload = parseJwt(response.credential);
-      console.log(responsePayload);
-      console.log("Email: " + responsePayload.email);
-    }
 
     function parseJwt(token) {
       var base64Url = token.split('.')[1];
@@ -599,6 +622,33 @@
 
       return JSON.parse(jsonPayload);
     };
+
+    function handleCredentialResponse(response) {
+      console.log(response)
+      const responsePayload = window.identity = parseJwt(response.credential);
+      console.log(responsePayload);
+      // console.log("Email: " + responsePayload.email);
+      // TODO: need to validate --> https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
+      if (responsePayload.email_verified) {
+        window.isAuthenticated = true;
+        handleAuth();
+      }
+
+    }
+
+    function handleAuth() {
+      if (window.isAuthenticated) {
+        console.log("Authenticated!")
+        window.signInWithBtn.style.setProperty('display', 'none');
+        document.getElementById('gacct-user').innerText = `Hey ${window.identity
+          .given_name} (${window.identity
+            .email})`;
+      } else {
+        console.log("Not Authenticated!")
+      }
+
+    }
+
 
     Vue.createApp({
       data() {
