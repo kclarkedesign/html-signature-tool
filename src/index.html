@@ -8,13 +8,16 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="js/config.js"></script>
   <script>
+    const CLIENT_ID = config.CLIENT_ID
+    const API_KEY = config.API_KEY
     window.onload = function () {
       const signInWithBtn = window.signInWithBtn = document.getElementById("g-siw_btn");
       const signOutBtn = window.signOutBtn = document.getElementById('gacct-user-signout');
-      console.log(signOutBtn)
+
       google.accounts.id.initialize({
-        client_id: "97253561804-8f9al1lntf06qqivh426fqbj9vp24ke0.apps.googleusercontent.com",
+        client_id: CLIENT_ID,
         callback: handleCredentialResponse,
         auto_select: true,
         cancel_on_tap_outside: false,
@@ -25,10 +28,32 @@
         { theme: "outline", size: "large" }  // customization attributes
       );
       google.accounts.id.prompt((notification) => {
-        console.log(notification)
+        // console.log(notification)
       }); // also display the One Tap dialog
 
       handleAuth();
+
+      // handle consent for gmail api
+      window.client = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: 'https://www.googleapis.com/auth/gmail.settings.basic \
+              https://www.googleapis.com/auth/gmail.settings.sharing',
+        callback: (tokenResponse) => {
+          if (tokenResponse && tokenResponse.access_token) {
+            // gapi.client.setToken({
+            //   access_token: tokenResponse.access_token,
+            // })
+            gapi.client.setApiKey(API_KEY);
+
+            // console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
+            gapi.client.load('gmail', 'v1', () => {
+              console.log('ready to run gmail api requests')
+              // handleGmailSignature()
+              patchGmailSendAs();
+            });
+          }
+        }
+      });
       signOutBtn.addEventListener('click', handleSignout);
     }
   </script>
@@ -116,21 +141,6 @@
             We'll never share your email with anyone else.
           </div> -->
           </div>
-          <!-- <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="exampleInputPassword1"
-          />
-        </div>
-        <div class="mb-3 form-check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-          <label class="form-check-label" for="exampleCheck1"
-            >Check me out</label
-          >
-        </div> -->
-          <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
         </form>
       </div>
       <div class="app__preview">
@@ -592,6 +602,8 @@
       <div class="copy__controls mt-2">
         <button @click="handleCopyToClipboard" id="ctc-btn" class="btn btn-copy btn-primary m-4">Copy to
           clipboard</button>
+        <button @click="handleUpdateGmailSig" id="atg-btn" class="btn btn-secondary m-4" style="display: none;">Add to
+          Gmail</button>
       </div>
     </main>
     <footer class="footer mt-auto py-3 bg-dark">
@@ -602,6 +614,10 @@
   </div>
 
   <script>
+    //TODO Make Vue code run before GAPI
+    // var tokenClient;
+    // var access_token;
+
     // https://stackoverflow.com/a/38552302/3623472
     // also see -> https://googleonetap.developer.li/assets/js/utils.js and https://stackoverflow.com/a/47574303/4064162
     // consider using JWT decoder
@@ -619,7 +635,6 @@
     function handleCredentialResponse(response) {
       // console.log(response)
       const responsePayload = window.identity = parseJwt(response.credential);
-      console.log(responsePayload);
 
       // TODO: need to validate --> https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
       if (responsePayload.email_verified) {
@@ -628,41 +643,63 @@
       }
     }
 
-    function initClient() {
+    // TODO: retrieve previously created signature (if possible)
+    function handleGmailSignature() {
+      gapi.client.gmail.users.settings.sendAs.get({ "userId": window.identity.email, "sendAsEmail": window.identity.email })
+        // gapi.client.gmail.users.settings.sendAs.list({ "userId": window.identity.email })
+        .then(function (response) {
+          console.log(response);
+        }, function (err) { console.error("Execute error", err); });
+    }
+
+    function patchGmailSendAs() {
+      const currentEmailSig = document.querySelector('.main__html').outerHTML;
+      return gapi.client.gmail.users.settings.sendAs.patch({
+        "userId": window.identity.email,
+        "sendAsEmail": window.identity.email,
+        "resource": {
+          "signature": currentEmailSig
+        }
+      })
+        .then(function (response) {
+          // Handle the results here (response.result has the parsed body).
+          // console.log("Response", response);
+          window.open('https://mail.google.com/mail/u/2/#inbox?compose=new', 'newGmailEmail');
+        },
+          function (err) { console.error("Execute error", err); });
+    }
+
+    function getGAPIAccessToken() {
       gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES
       }).then(function () {
-        // Listen for sign-in state changes.        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-
-        // Handle the initial sign-in state.          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-
-      }, function (error) {
-        appendPre(JSON.stringify(error, null, 2));
+        gapi.client.load('gmail', 'v1');
+      }).then(function (response) {
+        console.log('gmail loaded');
+      }, function (reason) {
+        console.log('Error: ' + reason.result.error.message);
       });
     }
 
     function handleAuth() {
       const authUserTxt = document.getElementById('gacct-user');
       if (window.isAuthenticated) {
+        // TODO: retrieve user contact info to update signature fields
         console.log("Authenticated!")
         window.signInWithBtn.style.setProperty('display', 'none');
         window.signOutBtn.style.setProperty('display', 'block');
+
         window.signOutBtn.innerHTML = `${window.identity
           .email} (Sign Out) <img class="gacct-user-avatar" src="${window.identity.picture}" alt="${window.identity
             .email}">`;
         authUserTxt.innerHTML = `Hey ${window.identity
           .given_name}!`;
-
-        gapi.load('client', initClient);
       } else {
         console.log("Not Authenticated!")
         window.signInWithBtn.style.setProperty('display', 'block');
         window.signOutBtn.style.setProperty('display', 'none');
         authUserTxt.innerText = "";
       }
+      root.handleGAPIBtn();
     }
 
     function handleSignout() {
@@ -671,7 +708,7 @@
       handleAuth()
     }
 
-    Vue.createApp({
+    const app = Vue.createApp({
       data() {
         return {
           personName: "Full Name",
@@ -693,6 +730,14 @@
         };
       },
       methods: {
+        handleGAPIBtn() {
+          const addToGmailBtn = document.getElementById('atg-btn');
+          if (window.isAuthenticated) {
+            addToGmailBtn.style.setProperty('display', 'inline-block');
+          } else {
+            addToGmailBtn.style.setProperty('display', 'none');
+          }
+        },
         handleFocus(event, val) {
           event.target.select();
         },
@@ -713,6 +758,29 @@
             document.execCommand('copy');
           }
         },
+        handleUpdateGmailSig() {
+          gapi.load('client', getGAPIAccessToken)
+          window.client.requestAccessToken();
+        },
+        // runClipboadApi() {
+        //   //todo: cleanup to keep DRY with next function
+        //   // need HTML and Plain text as fallback (Chrome Android 97.0.4692.98)
+        //   const htmlData = document.querySelector('.main__html').outerHTML;
+        //   const plainData = document.querySelector('.app__preview').innerText;
+        //   // setup newer clipboard async https://www.nikouusitalo.com/blog/why-isnt-clipboard-write-copying-my-richtext-html/
+
+        //   const clipboardItem = new ClipboardItem({
+        //     "text/plain": new Blob(
+        //       [plainData],
+        //       { type: "text/plain" }
+        //     ),
+        //     "text/html": new Blob(
+        //       [htmlData],
+        //       { type: "text/html" }
+        //     ),
+        //   });
+        //   navigator.clipboard.write([clipboardItem]);
+        // },
         getHTMLSignature(e) {
           // needed to prevent browser from overriding clipboard
           e.preventDefault();
@@ -808,11 +876,13 @@
           return this.pronouns.length > 0 && containsPronoun;
         },
       },
-    }).mount("#app");
+    })
+
+    const root = app.mount("#app");
+
   </script>
-  <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
-    onreadystatechange="if (this.readyState === 'complete') this.onload()">
-    </script>
+  <script async defer src="https://apis.google.com/js/api.js">
+  </script>
 </body>
 
 </html>
