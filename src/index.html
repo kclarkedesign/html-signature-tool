@@ -10,8 +10,9 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="js/config.js"></script>
   <script>
-    const CLIENT_ID = config.CLIENT_ID
-    const API_KEY = config.API_KEY
+    let GAPI_ACTION = 'set';
+    const CLIENT_ID = config.CLIENT_ID;
+    const API_KEY = config.API_KEY;
     window.onload = function () {
       const signInWithBtn = window.signInWithBtn = document.getElementById("g-siw_btn");
       const signOutBtn = window.signOutBtn = document.getElementById('gacct-user-signout');
@@ -48,8 +49,11 @@
             // console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
             gapi.client.load('gmail', 'v1', () => {
               console.log('ready to run gmail api requests')
-              // handleGmailSignature()
-              patchGmailSendAs();
+              const GAPI_ACTION_CONTROl_OBJ = {
+                'load': handleGmailSignature,
+                'set': patchGmailSendAs
+              }
+              GAPI_ACTION_Control[GAPI_ACTION]()
             });
           }
         }
@@ -645,6 +649,7 @@
 
     // TODO: retrieve previously created signature (if possible)
     function handleGmailSignature() {
+      GAPI_ACTION = 'load';
       gapi.client.gmail.users.settings.sendAs.get({ "userId": window.identity.email, "sendAsEmail": window.identity.email })
         // gapi.client.gmail.users.settings.sendAs.list({ "userId": window.identity.email })
         .then(function (response) {
@@ -653,6 +658,7 @@
     }
 
     function patchGmailSendAs() {
+      GAPI_ACTION = 'set';
       const currentEmailSig = document.querySelector('.main__html').outerHTML;
       return gapi.client.gmail.users.settings.sendAs.patch({
         "userId": window.identity.email,
@@ -762,25 +768,6 @@
           gapi.load('client', getGAPIAccessToken)
           window.client.requestAccessToken();
         },
-        // runClipboadApi() {
-        //   //todo: cleanup to keep DRY with next function
-        //   // need HTML and Plain text as fallback (Chrome Android 97.0.4692.98)
-        //   const htmlData = document.querySelector('.main__html').outerHTML;
-        //   const plainData = document.querySelector('.app__preview').innerText;
-        //   // setup newer clipboard async https://www.nikouusitalo.com/blog/why-isnt-clipboard-write-copying-my-richtext-html/
-
-        //   const clipboardItem = new ClipboardItem({
-        //     "text/plain": new Blob(
-        //       [plainData],
-        //       { type: "text/plain" }
-        //     ),
-        //     "text/html": new Blob(
-        //       [htmlData],
-        //       { type: "text/html" }
-        //     ),
-        //   });
-        //   navigator.clipboard.write([clipboardItem]);
-        // },
         getHTMLSignature(e) {
           // needed to prevent browser from overriding clipboard
           e.preventDefault();
