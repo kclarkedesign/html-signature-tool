@@ -714,26 +714,31 @@
       handleAuth()
     }
 
+    const defaultData = {
+      personName: "Full Name",
+      pronouns: [{ id: 0, text: "pronoun" }],
+      pronounIdIncrement: 0,
+      disablePronouns: false,
+      jobTitle: "Job title",
+      orgName: "The Writing Revolution",
+      orgLogo:
+        "http://www.thewritingrevolution.org/img/twr-logo_color_250x72.png",
+      mainPhoneNum: "+1 999.999.9999",
+      website: "thewritingrevolution.org",
+      email: "email@thewritingrevolution.org",
+      addrLine1: "90 Broad Street",
+      addrLine2: "3rd Floor",
+      city: "New York",
+      state: "NY",
+      zip: "10004",
+    };
+
     const app = Vue.createApp({
       data() {
         return {
-          personName: "Full Name",
-          pronouns: [{ id: 0, text: "pronoun" }],
-          pronounIdIncrement: 0,
-          disablePronouns: false,
-          jobTitle: "Job title",
-          orgName: "The Writing Revolution",
-          orgLogo:
-            "http://www.thewritingrevolution.org/img/twr-logo_color_250x72.png",
-          mainPhoneNum: "+1 999.999.9999",
-          website: "thewritingrevolution.org",
-          email: "email@thewritingrevolution.org",
-          addrLine1: "90 Broad Street",
-          addrLine2: "3rd Floor",
-          city: "New York",
-          state: "NY",
-          zip: "10004",
-        };
+          data: defaultData,
+
+        }
       },
       methods: {
         handleGAPIBtn() {
