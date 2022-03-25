@@ -10,7 +10,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="js/config.js"></script>
   <script>
-    let GAPI_ACTION = 'set';
+    let GAPI_ACTION = 'load';
     const CLIENT_ID = config.CLIENT_ID;
     const API_KEY = config.API_KEY;
     window.onload = function () {
@@ -50,10 +50,10 @@
             gapi.client.load('gmail', 'v1', () => {
               console.log('ready to run gmail api requests')
               const GAPI_ACTION_CONTROl_OBJ = {
-                'load': handleGmailSignature,
+                'load': getGmailSignature,
                 'set': patchGmailSendAs
               }
-              GAPI_ACTION_Control[GAPI_ACTION]()
+              GAPI_ACTION_CONTROl_OBJ[GAPI_ACTION]()
             });
           }
         }
@@ -648,7 +648,7 @@
     }
 
     // TODO: retrieve previously created signature (if possible)
-    function handleGmailSignature() {
+    function getGmailSignature() {
       GAPI_ACTION = 'load';
       gapi.client.gmail.users.settings.sendAs.get({ "userId": window.identity.email, "sendAsEmail": window.identity.email })
         // gapi.client.gmail.users.settings.sendAs.list({ "userId": window.identity.email })
@@ -699,6 +699,7 @@
             .email}">`;
         authUserTxt.innerHTML = `Hey ${window.identity
           .given_name}!`;
+        root.handleUpdateGmailSig();
       } else {
         console.log("Not Authenticated!")
         window.signInWithBtn.style.setProperty('display', 'block');
@@ -735,10 +736,7 @@
 
     const app = Vue.createApp({
       data() {
-        return {
-          data: defaultData,
-
-        }
+        return defaultData
       },
       methods: {
         handleGAPIBtn() {
