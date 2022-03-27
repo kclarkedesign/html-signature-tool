@@ -41,15 +41,10 @@
               https://www.googleapis.com/auth/gmail.settings.sharing',
         callback: (tokenResponse) => {
           if (tokenResponse && tokenResponse.access_token) {
-            // gapi.client.setToken({
-            //   access_token: tokenResponse.access_token,
-            // })
             gapi.client.setApiKey(API_KEY);
 
             // console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
             gapi.client.load('gmail', 'v1', () => {
-              console.log('ready to run gmail api requests');
-              console.log(GAPI_ACTION)
               const GAPI_ACTION_CONTROl_OBJ = {
                 'load': getGmailSignature,
                 'set': patchGmailSendAs
@@ -688,14 +683,7 @@
     }
 
     function getGAPIAccessToken() {
-      gapi.client.init({
-      }).then(function () {
-        gapi.client.load('gmail', 'v1');
-      }).then(function (response) {
-        console.log('gmail loaded');
-      }, function (reason) {
-        console.log('Error: ' + reason.result.error.message);
-      });
+      gapi.client.init({})
     }
 
     function handleAuth() {
@@ -786,6 +774,15 @@
             console.log(event.target)
           }
           gapi.load('client', getGAPIAccessToken)
+          console.log(window.client)
+          // if (gapi.client.getToken() === null) {
+          //   // Prompt the user to select an Google Account and asked for consent to share their data
+          //   // when establishing a new session.
+          //   tokenClient.requestAccessToken({ prompt: 'consent' });
+          // } else {
+          //   // Skip display of account chooser and consent dialog for an existing session.
+          //   tokenClient.requestAccessToken({ prompt: '' });
+          // }
           window.client.requestAccessToken();
         },
         getHTMLSignature(e) {
