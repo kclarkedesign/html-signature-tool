@@ -48,7 +48,8 @@
 
             // console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
             gapi.client.load('gmail', 'v1', () => {
-              console.log('ready to run gmail api requests')
+              console.log('ready to run gmail api requests');
+              console.log(GAPI_ACTION)
               const GAPI_ACTION_CONTROl_OBJ = {
                 'load': getGmailSignature,
                 'set': patchGmailSendAs
@@ -148,6 +149,7 @@
         </form>
       </div>
       <div class="app__preview">
+        <div class="preview__heading">Signature Details Preview</div>
         <table class="main__html" style="direction: ltr; border-collapse: collapse">
           <tbody>
             <tr>
@@ -602,6 +604,11 @@
             </tr>
           </tbody>
         </table>
+        <div class="preview__existing-signature" :class="existingSigLoaded">
+          <div v-if="existingSig.length != 0" class="preview__heading">Previous Signature
+          </div>
+          <div class="existing-signature__html"></div>
+        </div>
       </div>
       <div class="copy__controls mt-2">
         <button @click="handleCopyToClipboard" id="ctc-btn" class="btn btn-copy btn-primary m-4">Copy to
@@ -654,6 +661,9 @@
         // gapi.client.gmail.users.settings.sendAs.list({ "userId": window.identity.email })
         .then(function (response) {
           console.log(response);
+          root.existingSig = response.result.signature;
+          const existingEmailsig = document.querySelector('.existing-signature__html');
+          existingEmailsig.innerHTML = root.existingSig;
         }, function (err) { console.error("Execute error", err); });
     }
 
@@ -671,6 +681,8 @@
           // Handle the results here (response.result has the parsed body).
           // console.log("Response", response);
           window.open('https://mail.google.com/mail/u/2/#inbox?compose=new', 'newGmailEmail');
+          // update previous signature in preview
+          getGmailSignature();
         },
           function (err) { console.error("Execute error", err); });
     }
@@ -732,6 +744,7 @@
       city: "New York",
       state: "NY",
       zip: "10004",
+      existingSig: ""
     };
 
     const app = Vue.createApp({
@@ -768,6 +781,10 @@
           }
         },
         handleUpdateGmailSig() {
+          if (event.target.id == "atg-btn") {
+            GAPI_ACTION = 'set';
+            console.log(event.target)
+          }
           gapi.load('client', getGAPIAccessToken)
           window.client.requestAccessToken();
         },
@@ -856,6 +873,11 @@
         },
       },
       computed: {
+        existingSigLoaded() {
+          return {
+            'is--loaded': this.existingSig.length != 0,
+          }
+        },
         hasName() {
           return this.personName.length != 0;
         },
