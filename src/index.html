@@ -658,6 +658,7 @@
         .then(function (response) {
           console.log(response);
           root.existingSig = response.result.signature;
+          root.email = response.result.sendAsEmail;
           const existingEmailsig = document.querySelector('.existing-signature__html');
           existingEmailsig.innerHTML = root.existingSig;
         }, function (err) { console.error("Execute error", err); });
