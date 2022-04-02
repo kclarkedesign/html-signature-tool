@@ -134,6 +134,14 @@
           </div> -->
           </div>
           <div class="mb-3">
+            <label for="website" class="form-label">Website</label>
+            <input @focus="handleFocus($event, website)" type="text" class="form-control" id="website"
+              aria-describedby="websiteHelp" v-model="website" />
+            <!-- <div id="emailHelp" class="form-text">
+                      We'll never share your email with anyone else.
+                    </div> -->
+          </div>
+          <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input @focus="handleFocus($event, email)" type="email" class="form-control" id="email"
               aria-describedby="emailHelp" v-model="email" />
@@ -165,7 +173,7 @@
                                   <tbody>
                                     <tr>
                                       <td>
-                                        <a v-if href="">
+                                        <a v-if="hasWebsite" :href="website">
                                           <img :src="orgLogo" height="52" width="180" style="
                                               width: 180;
                                               vertical-align: initial;
@@ -174,6 +182,8 @@
                                               height: 52px;
                                             " />
                                         </a>
+                                        <img v-if="!hasWebsite" :src="orgLogo" height="52" width="180"
+                                          style=" width: 180; vertical-align: initial; border-radius: 4px; display: block; height: 52px;" />
                                       </td>
                                     </tr>
                                   </tbody>
@@ -304,7 +314,7 @@
                                                   </tbody>
                                                 </table>
                                               </td>
-                                              <td style="
+                                              <td v-if="website.length != 0" style="
                                                     line-height: 0%;
                                                     padding-bottom: 6px;
                                                   ">
@@ -354,7 +364,7 @@
                                                             font-family: Arial;
                                                             font-size: 12px;
                                                           ">
-                                                        <a href="http://thewritingrevolution.org" target="_blank" style="
+                                                        <a :href="website" target="_blank" style="
                                                               color-scheme: light
                                                                 only;
                                                               text-decoration: none;
@@ -370,7 +380,7 @@
                                                                 white-space: nowrap;
                                                                 font-size: 12px;
                                                               ">
-                                                            {{website}}
+                                                            {{getWebsiteHost}}
                                                           </span>
                                                         </a>
                                                       </td>
@@ -728,7 +738,7 @@
       orgLogo:
         "http://www.thewritingrevolution.org/img/twr-logo_color_250x72.png",
       mainPhoneNum: "+1 999.999.9999",
-      website: "thewritingrevolution.org",
+      website: "https://thewritingrevolution.org",
       email: "email@thewritingrevolution.org",
       addrLine1: "90 Broad Street",
       addrLine2: "3rd Floor",
@@ -879,7 +889,10 @@
           }
         },
         hasWebsite() {
-          return
+          return this.website.length != 0;
+        },
+        getWebsiteHost() {
+          return this.website.split('//')[1];
         },
         hasName() {
           return this.personName.length != 0;
