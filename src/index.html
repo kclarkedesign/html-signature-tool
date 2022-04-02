@@ -650,7 +650,7 @@
       }
     }
 
-    // TODO: retrieve previously created signature (if possible)
+    // retrieve previously created signature (if possible)
     function getGmailSignature() {
       GAPI_ACTION = 'load';
       gapi.client.gmail.users.settings.sendAs.get({ "userId": window.identity.email, "sendAsEmail": window.identity.email })
