@@ -165,13 +165,15 @@
                                   <tbody>
                                     <tr>
                                       <td>
-                                        <img :src="orgLogo" height="52" width="180" style="
+                                        <a v-if href="">
+                                          <img :src="orgLogo" height="52" width="180" style="
                                               width: 180;
                                               vertical-align: initial;
                                               border-radius: 4px;
                                               display: block;
                                               height: 52px;
                                             " />
+                                        </a>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -650,7 +652,7 @@
       }
     }
 
-    // retrieve previously created signature (if possible)
+    // retrieve previously created signature (if possible) and update email based on account chosen
     function getGmailSignature() {
       GAPI_ACTION = 'load';
       gapi.client.gmail.users.settings.sendAs.get({ "userId": window.identity.email, "sendAsEmail": window.identity.email })
@@ -676,7 +678,6 @@
       })
         .then(function (response) {
           // Handle the results here (response.result has the parsed body).
-          // console.log("Response", response);
           window.open('https://mail.google.com/mail/u/2/#inbox?compose=new', 'newGmailEmail');
           // update previous signature in preview
           getGmailSignature();
@@ -876,6 +877,9 @@
           return {
             'is--loaded': this.existingSig.length != 0,
           }
+        },
+        hasWebsite() {
+          return
         },
         hasName() {
           return this.personName.length != 0;
