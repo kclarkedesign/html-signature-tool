@@ -39,18 +39,31 @@
         client_id: CLIENT_ID,
         scope: 'https://www.googleapis.com/auth/gmail.settings.basic \
               https://www.googleapis.com/auth/gmail.settings.sharing \
-              https://www.googleapis.com/auth/userinfo.profile',
+              https://www.googleapis.com/auth/userinfo.profile \
+              https://www.googleapis.com/auth/user.organization.read \
+              https://www.googleapis.com/auth/user.gender.read \
+              https://www.googleapis.com/auth/user.phonenumbers.read',
         callback: (tokenResponse) => {
           if (tokenResponse && tokenResponse.access_token) {
             gapi.client.setApiKey(API_KEY);
 
-            // console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
+            // load
             gapi.client.load('gmail', 'v1', () => {
               const GAPI_ACTION_CONTROl_OBJ = {
                 'load': getGmailSignature,
                 'set': patchGmailSendAs
               }
               GAPI_ACTION_CONTROl_OBJ[GAPI_ACTION]()
+            });
+
+            gapi.client.load('people', 'v1', () => {
+              // const GAPI_ACTION_CONTROl_OBJ = {
+              //   'load': getGmailSignature,
+              //   'set': patchGmailSendAs
+              // }
+              // GAPI_ACTION_CONTROl_OBJ[GAPI_ACTION]()
+              getProfileDetails();
+
             });
           }
         }
@@ -696,6 +709,25 @@
           function (err) { console.error("Execute error", err); });
     }
 
+    function getProfileDetails() {
+      return gapi.client.people.people.get({
+        "resourceName": "people/me",
+        "personFields": "emailAddresses,names,genders,phoneNumbers,organizations"
+      })
+        .then(function (response) {
+          console.log(response)
+          const resp = response.result;
+          if (res.names) {
+
+          }
+          if (res.phoneNumbers) {
+
+          }
+          // root.mainPhoneNum = response.result.mainPhoneNum
+        },
+          function (err) { console.error("Execute error", err); });
+    }
+
     function getGAPIAccessToken() {
       gapi.client.init({})
     }
@@ -788,7 +820,7 @@
             console.log(event.target)
           }
           gapi.load('client', getGAPIAccessToken)
-          console.log(window.client)
+          // console.log(window.client)
           // if (gapi.client.getToken() === null) {
           //   // Prompt the user to select an Google Account and asked for consent to share their data
           //   // when establishing a new session.
