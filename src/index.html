@@ -717,16 +717,22 @@
         .then(function (response) {
           console.log(response)
           const resp = response.result;
-          if (res.names) {
-
+          if (resp.names) {
+            // resp.names[0].metadata.primary
+            const primaryName = resp.names.find(name => name.metadata.primary === true);
+            // console.log(primaryName.displayName);
+            root.personName = primaryName.displayName;
           }
-          if (res.phoneNumbers) {
+
+          if (resp.phoneNumbers) {
 
           }
           // root.mainPhoneNum = response.result.mainPhoneNum
         },
           function (err) { console.error("Execute error", err); });
     }
+
+
 
     function getGAPIAccessToken() {
       gapi.client.init({})
