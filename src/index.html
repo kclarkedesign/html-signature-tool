@@ -625,11 +625,9 @@
             </tr>
           </tbody>
         </table>
-        <!-- TODO: hide area after sign out -->
         <div class="preview__existing-signature" :class="existingSigLoaded">
-          <div v-if="existingSig.length != 0" class="preview__heading">Previous Signature
-          </div>
-          <div class="existing-signature__html"></div>
+          <div class="preview__heading">Previous Signature</div>
+          <div class="existing-signature__html" v-html="existingSig"></div>
         </div>
       </div>
       <div class="copy__controls mt-2">
@@ -685,8 +683,6 @@
           console.log(response);
           root.existingSig = response.result.signature;
           root.email = response.result.sendAsEmail;
-          const existingEmailsig = document.querySelector('.existing-signature__html');
-          existingEmailsig.innerHTML = root.existingSig;
         }, function (err) { console.error("Execute error", err); });
     }
 
@@ -746,7 +742,6 @@
     function handleAuth() {
       const authUserTxt = document.getElementById('gacct-user');
       if (window.isAuthenticated) {
-        // TODO: retrieve user contact info to update signature fields
         console.log("Authenticated!")
         window.signInWithBtn.style.setProperty('display', 'none');
         window.signOutBtn.style.setProperty('display', 'block');
@@ -762,6 +757,7 @@
         window.signInWithBtn.style.setProperty('display', 'block');
         window.signOutBtn.style.setProperty('display', 'none');
         authUserTxt.innerText = "";
+        root.existingSig = '';
       }
       root.handleGAPIBtn();
     }

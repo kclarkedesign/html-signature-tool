@@ -37,13 +37,20 @@
   padding-left: 20px;
   padding-right: var(--bs-gutter-x, 0.75rem);
 }
-
+.preview__existing-signature {
+  display: none;
+}
 .preview__existing-signature.is--loaded {
+  display: block;
   margin-top: 1.5em;
   border: 1px solid #f3f3f3;
   padding: 13px;
   border-radius: 8px;
   box-shadow: 0px 0px 10px 0px #d1d1d1;
+}
+
+.preview__existing-signature a {
+  text-decoration: none;
 }
 
 .preview__heading {
