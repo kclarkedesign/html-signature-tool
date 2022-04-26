@@ -10,6 +10,8 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="js/config.js"></script>
   <script>
+    let windowUrl = new URL(window.location.href);
+    console.log(windowUrl)
     let GAPI_ACTION = 'load';
     const CLIENT_ID = config.CLIENT_ID;
     const API_KEY = config.API_KEY;
@@ -633,6 +635,7 @@
       <div class="copy__controls mt-2">
         <button @click="handleCopyToClipboard" id="ctc-btn" class="btn btn-copy btn-primary m-4">Copy to
           clipboard</button>
+        <button @click="handleShare" id="share-btn" class="btn btn-share btn-primary m-4">Share</button>
         <button @click="handleUpdateGmailSig" id="atg-btn" class="btn btn-secondary m-4" style="display: none;">Add to
           Gmail</button>
       </div>
@@ -812,6 +815,13 @@
           }
           return isMobile;
         },
+        buildShareParam(key) {
+          return encodeURI(`${key}=${root[key]}`);
+        },
+        handleShare(event) {
+          console.log(this.buildShareParam("personName"));
+
+        },
         handleCopyToClipboard(event) {
           if (this.detectMobile || navigator.clipboard) {
             this.getHTMLSignature(event);
@@ -921,6 +931,17 @@
             })
             .join(separator + " ")}) `;
         },
+        // onload check/manage filters
+        checkSearchParams(url, useHistory = false) {
+          let searchParams = url.searchParams;
+          console.log(searchParams)
+
+          // if (searchParams.has("filter")) {
+          //   // apply available searchParams to activeFilters
+          //   activeFilters = searchParams.getAll("filter");
+
+          // }
+        }
       },
       computed: {
         existingSigLoaded() {
