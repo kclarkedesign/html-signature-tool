@@ -819,8 +819,18 @@
           return encodeURI(`${key}=${root[key]}`);
         },
         handleShare(event) {
-          console.log(this.buildShareParam("personName"));
+          let query = '';
+          let queryParams = new URLSearchParams(window.location.search);
+          const shareFields = ["personName", "jobTitle", "mainPhoneNum", "email"];
 
+          shareFields.forEach((field, index) => {
+            const queryParam = this.buildShareParam(field).split("=")
+            query = query + (index === 0 ? "?" : "&") + this.buildShareParam(field);
+            queryParams.append(queryParam[0], queryParam[1]);
+          });
+          console.log(...queryParams.entries())
+          //trigger a popup or toast
+          console.log(windowUrl + query);
         },
         handleCopyToClipboard(event) {
           if (this.detectMobile || navigator.clipboard) {
