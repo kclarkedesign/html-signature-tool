@@ -11,7 +11,7 @@
   <script src="js/config.js"></script>
   <script>
     let windowUrl = new URL(window.location.href);
-    console.log(windowUrl)
+    console.log(windowUrl);
     let GAPI_ACTION = 'load';
     const CLIENT_ID = config.CLIENT_ID;
     const API_KEY = config.API_KEY;
@@ -828,9 +828,12 @@
             query = query + (index === 0 ? "?" : "&") + this.buildShareParam(field);
             queryParams.append(queryParam[0], queryParam[1]);
           });
-          console.log(...queryParams.entries())
+          console.log(...queryParams.entries());
           //trigger a popup or toast
           console.log(windowUrl + query);
+        },
+        handleQuery() {
+          // check and set field values based on params
         },
         handleCopyToClipboard(event) {
           if (this.detectMobile || navigator.clipboard) {
@@ -978,6 +981,10 @@
     })
 
     const root = app.mount("#app");
+
+    if (windowUrl.search !== "") {
+      root.handleQuery();
+    }
 
   </script>
   <script async defer src="https://apis.google.com/js/api.js">
