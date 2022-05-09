@@ -143,8 +143,8 @@
           </div>
           <div class="mb-3">
             <label for="main-phone" class="form-label">Phone</label>
-            <input @focus="handleFocus($event, mainPhoneNum)" type="tel" class="form-control" id="main-phone"
-              aria-describedby="mainPhoneNumHelp" v-model="mainPhoneNum" />
+            <input @focus="handleFocus($event, mainPhoneNum)" @input="formatPhone()" type="tel" class="form-control"
+              id="main-phone" aria-describedby="mainPhoneNumHelp" v-model="mainPhoneNum" />
             <!-- <div id="emailHelp" class="form-text">
             We'll never share your email with anyone else.
           </div> -->
@@ -954,6 +954,28 @@
           //   activeFilters = searchParams.getAll("filter");
 
           // }
+        },
+        formatPhone(countryCode = "+1", phoneFormat = "$1.$2.$3") {
+          let cleanNum = "";
+          let validNum = "";
+          let mainNum = "";
+          if (this.mainPhoneNum.startsWith("+")) {
+            cleanNum = this.mainPhoneNum.replace("+", "").slice();
+          }
+
+          cleanNum = this.mainPhoneNum.replace(/\D+/g, '');
+          let TenDigitsReversed = [...cleanNum].reverse().join('').substr(0, 10);
+          cleanNum = validNum = [...TenDigitsReversed].reverse().join("");
+
+
+          if (this.mainPhoneNum.length < countryCode.length + 3 + cleanNum.length) {
+            mainNum = cleanNum.replace(/(\d{3})(\d{3})(\d{4})/, countryCode + " " + phoneFormat);
+            validNum = mainNum;
+          }
+
+          this.mainPhoneNum = validNum;
+          console.log(validNum)
+          // return `+countryCode ${numStr.replace(/\D+/g, '').replace(/(\d{3})(\d{3})(\d{4})/, phoneFormat)}`
         }
       },
       computed: {
