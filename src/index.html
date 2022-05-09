@@ -818,6 +818,7 @@
         buildShareParam(key) {
           return encodeURI(`${key}=${root[key]}`);
         },
+        // TODO: finish working on share functionality, like setting and reading the query string
         handleShare(event) {
           let query = '';
           let queryParams = new URLSearchParams(window.location.search);
@@ -956,6 +957,7 @@
           // }
         },
         formatPhone(countryCode = "+1", phoneFormat = "$1.$2.$3") {
+          // TODO: find ways to improve this 
           let cleanNum = "";
           let validNum = "";
           let mainNum = "";
@@ -974,8 +976,6 @@
           }
 
           this.mainPhoneNum = validNum;
-          console.log(validNum)
-          // return `+countryCode ${numStr.replace(/\D+/g, '').replace(/(\d{3})(\d{3})(\d{4})/, phoneFormat)}`
         }
       },
       computed: {
