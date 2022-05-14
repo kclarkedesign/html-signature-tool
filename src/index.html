@@ -823,11 +823,25 @@
         handleShare(event) {
           let query = '';
           let queryParams = new URLSearchParams(window.location.search);
-          const shareFields = ["personName", "jobTitle", "mainPhoneNum", "email"];
+          const shareFields = ["personName", "pronouns", "jobTitle", "mainPhoneNum", "website", "email"];
 
           shareFields.forEach((field, index) => {
-            const queryParam = this.buildShareParam(field).split("=")
-            query = query + (index === 0 ? "?" : "&") + this.buildShareParam(field);
+            let queryParam = [];
+            if (field === "pronouns") {
+              // get pronouns and map values
+              let pronounsVal = this.getPronouns("")
+                .replace("&nbsp;", "")
+                .replace(/[\(\)]/g, "")
+                .trim()
+                .replaceAll(/\s/g, "%20");
+
+              query = `${query}&${field}=${pronounsVal}`;
+              queryParam.push(field);
+              queryParam.push(pronounsVal)
+            } else {
+              queryParam = this.buildShareParam(field).split("=")
+              query = query + (index === 0 ? "?" : "&") + this.buildShareParam(field);
+            }
             queryParams.append(queryParam[0], queryParam[1]);
           });
           console.log(...queryParams.entries());
