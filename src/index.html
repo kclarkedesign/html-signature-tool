@@ -11,7 +11,6 @@
   <script src="js/config.js"></script>
   <script>
     let windowUrl = new URL(window.location.href);
-    console.log(windowUrl);
     let GAPI_ACTION = 'load';
     const CLIENT_ID = config.CLIENT_ID;
     const API_KEY = config.API_KEY;
@@ -962,6 +961,7 @@
         },
         // onload check/manage filters
         checkSearchParams(url, useHistory = false) {
+          console.log(url)
           let searchParams = url.searchParams;
           console.log(searchParams)
 
@@ -1015,6 +1015,11 @@
           return this.pronouns.length > 0 && containsPronoun;
         },
       },
+      async mounted() {
+
+        console.log('mounted');
+        this.checkSearchParams(windowUrl)
+      }
     })
 
     const root = app.mount("#app");
