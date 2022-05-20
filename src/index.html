@@ -855,6 +855,11 @@
             const searchEntryValue = filterArr[1];
             if (Object.hasOwn(this, searchEntryName)) {
               if (searchEntryName === "pronouns") {
+                // disable pronouns if none are found
+                if (searchEntryValue == "") {
+                  this.disablePronouns = true;
+                  return;
+                }
                 // create array for pronouns
                 const pronounsArr = searchEntryValue.split(" ");
                 const updatedPronouns = [];
