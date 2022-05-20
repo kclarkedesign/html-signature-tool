@@ -847,8 +847,16 @@
           //trigger a popup or toast
           console.log(windowUrl + query);
         },
-        handleQuery() {
+        handleQuery(params) {
           // check and set field values based on params
+          console.log([...params])
+          for (let filterArr of params.entries()) {
+            let sigProp = filterArr[0]
+
+            // console.log(params.get(sigProp))
+            console.log(Object.hasOwn(this, sigProp))
+            // this[filterArr[0]]
+          }
         },
         handleCopyToClipboard(event) {
           if (this.detectMobile || navigator.clipboard) {
@@ -961,15 +969,10 @@
         },
         // onload check/manage filters
         checkSearchParams(url, useHistory = false) {
-          console.log(url)
           let searchParams = url.searchParams;
-          console.log(searchParams)
-
-          // if (searchParams.has("filter")) {
-          //   // apply available searchParams to activeFilters
-          //   activeFilters = searchParams.getAll("filter");
-
-          // }
+          if ([...searchParams].length > 0) {
+            this.handleQuery(searchParams)
+          }
         },
         formatPhone(countryCode = "+1", phoneFormat = "$1.$2.$3") {
           // TODO: find ways to improve this 
@@ -1016,17 +1019,14 @@
         },
       },
       async mounted() {
-
-        console.log('mounted');
-        this.checkSearchParams(windowUrl)
+        if (windowUrl.search !== "") {
+          console.log('mounted');
+          this.checkSearchParams(windowUrl);
+        }
       }
     })
 
     const root = app.mount("#app");
-
-    if (windowUrl.search !== "") {
-      root.handleQuery();
-    }
 
   </script>
   <script async defer src="https://apis.google.com/js/api.js">
