@@ -844,6 +844,7 @@
             }
             queryParams.append(queryParam[0], queryParam[1]);
           });
+          // TODO: create modal and add url to copy (research basic share capabilities)
           console.log(...queryParams.entries());
           //trigger a popup or toast
           console.log(windowUrl + query);
@@ -1038,7 +1039,6 @@
       },
       async mounted() {
         if (windowUrl.search !== "") {
-          console.log('mounted');
           this.checkSearchParams(windowUrl);
         }
       }
