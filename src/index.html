@@ -828,6 +828,7 @@
             let queryParam = [];
             if (field === "pronouns") {
               // get pronouns and map values
+              // TODO setup pronouns to handle spaces properly
               let pronounsVal = this.getPronouns("")
                 .replace("&nbsp;", "")
                 .replace(/[\(\)]/g, "")
@@ -849,13 +850,25 @@
         },
         handleQuery(params) {
           // check and set field values based on params
-          console.log([...params])
           for (let filterArr of params.entries()) {
-            let sigProp = filterArr[0]
-
-            // console.log(params.get(sigProp))
-            console.log(Object.hasOwn(this, sigProp))
-            // this[filterArr[0]]
+            const searchEntryName = filterArr[0];
+            const searchEntryValue = filterArr[1];
+            if (Object.hasOwn(this, searchEntryName)) {
+              if (searchEntryName === "pronouns") {
+                // create array for pronouns
+                const pronounsArr = searchEntryValue.split(" ");
+                const updatedPronouns = [];
+                pronounsArr.forEach(function (pronounVal, index) {
+                  updatedPronouns.push({ id: index, text: pronounVal })
+                })
+                // update pronouns in v-model
+                this.pronouns = updatedPronouns;
+              } else {
+                if (this[searchEntryName] !== searchEntryValue) {
+                  this[searchEntryName] = searchEntryValue;
+                }
+              }
+            }
           }
         },
         handleCopyToClipboard(event) {
