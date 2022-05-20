@@ -859,16 +859,16 @@
                 // disable pronouns if none are found
                 if (searchEntryValue == "") {
                   this.disablePronouns = true;
-                  return;
+                } else {
+                  // create array for pronouns
+                  const pronounsArr = searchEntryValue.split(" ");
+                  const updatedPronouns = [];
+                  pronounsArr.forEach(function (pronounVal, index) {
+                    updatedPronouns.push({ id: index, text: pronounVal })
+                  })
+                  // update pronouns in v-model
+                  this.pronouns = updatedPronouns;
                 }
-                // create array for pronouns
-                const pronounsArr = searchEntryValue.split(" ");
-                const updatedPronouns = [];
-                pronounsArr.forEach(function (pronounVal, index) {
-                  updatedPronouns.push({ id: index, text: pronounVal })
-                })
-                // update pronouns in v-model
-                this.pronouns = updatedPronouns;
               } else {
                 if (this[searchEntryName] !== searchEntryValue) {
                   this[searchEntryName] = searchEntryValue;
