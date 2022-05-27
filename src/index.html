@@ -788,7 +788,8 @@
       city: "New York",
       state: "NY",
       zip: "10004",
-      existingSig: ""
+      existingSig: "",
+      modelIsOpen: false
     };
 
     const app = Vue.createApp({
@@ -847,7 +848,15 @@
           // TODO: create modal and add url to copy (research basic share capabilities)
           console.log(...queryParams.entries());
           //trigger a popup or toast
-          console.log(windowUrl + query);
+          this.handleModal(windowUrl + query);
+        },
+        handleModal(urlString) {
+          // if (!this.modelOpen) {
+
+          // } else {
+
+          // }
+          console.log(this.modelOpen)
         },
         handleQuery(params) {
           // check and set field values based on params
@@ -1036,6 +1045,9 @@
           );
           return this.pronouns.length > 0 && containsPronoun;
         },
+        modelOpen() {
+          return this.modelIsOpen = !this.modelIsOpen;
+        }
       },
       async mounted() {
         if (windowUrl.search !== "") {
