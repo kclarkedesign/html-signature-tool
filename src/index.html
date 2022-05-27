@@ -856,7 +856,7 @@
           // } else {
 
           // }
-          console.log(this.modelOpen)
+          console.log(this.modelOpen())
         },
         handleQuery(params) {
           // check and set field values based on params
@@ -1022,6 +1022,12 @@
           }
 
           this.mainPhoneNum = validNum;
+        },
+        modelOpen() {
+          return this.modelIsOpen = !this.modelIsOpen;
+          // this.modelIsOpen = modalStatus;
+          // console.log(this.modelIsOpen)
+          // return modalStatus;
         }
       },
       computed: {
@@ -1044,9 +1050,6 @@
             (item) => item.text.length != 0
           );
           return this.pronouns.length > 0 && containsPronoun;
-        },
-        modelOpen() {
-          return this.modelIsOpen = !this.modelIsOpen;
         }
       },
       async mounted() {
