@@ -97,16 +97,27 @@
       </nav>
     </header>
     <main class="app__content">
-      <div class="app__modal app__modal--share modal-active">
-        <div class="modal__bg"></div>
+      <div class="app__modal app__modal--share fade" :class="{'show modal-active': modelIsOpen }">
+        <div class="modal__bg" @click="modelOpen"></div>
         <div class="modal__container">
           <div class="modal__header">
-            Share this signature
+            <h1 class="modal__heading">Share this signature</h1>
+            <a class="modal__close" tabindex="0" role="button" @click="modelOpen">close</a>
+
           </div>
           <div class="modal__body">
-            <input type="text">
+            <div class="input-group">
+
+              <input class="modal__input form-control" :value="shareURL" type="text" readonly aria-readonly="true">
+              <a href="" @click="getShareURL" class="modal__btn modal__copy btn btn-dark" tabindex="1"
+                role="button">Copy</a>
+            </div>
+          </div>
+          <div class="modal__footer">
+
           </div>
         </div>
+
       </div>
       <div class="app__editor">
         <form>
@@ -800,7 +811,8 @@
       state: "NY",
       zip: "10004",
       existingSig: "",
-      modelIsOpen: false
+      modelIsOpen: false,
+      shareURL: ""
     };
 
     const app = Vue.createApp({
@@ -862,12 +874,14 @@
           this.handleModal(windowUrl + query);
         },
         handleModal(urlString) {
+          this.modelOpen()
+          this.shareURL = urlString;
           // if (!this.modelOpen) {
 
           // } else {
 
           // }
-          console.log(this.modelOpen())
+
         },
         handleQuery(params) {
           // check and set field values based on params
@@ -949,6 +963,22 @@
             document.removeEventListener('copy', this.getHTMLSignature);
           }
           this.handleCopyToClipboardBtn();
+        },
+        // todo: fix share url when visiting app that already has a query string
+        getShareURL(e) {
+          e.preventDefault();
+          const shareLink = this.shareURL;
+          const clipboardItem = new ClipboardItem({
+            "text/plain": new Blob(
+              [shareLink],
+              { type: "text/plain" }
+            ),
+            "text/html": new Blob(
+              [shareLink],
+              { type: "text/html" }
+            ),
+          });
+          navigator.clipboard.write([clipboardItem]);
         },
         handleCopyToClipboardBtn() {
           const copiedTxt = 'Copied!'
