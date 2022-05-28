@@ -118,3 +118,45 @@
 a:hover .gacct-user-avatar {
   border: 3px solid #fff;
 }
+
+.app__modal {
+  display: none;
+}
+
+.app__modal.modal-active {
+  display: block;
+}
+
+.modal__bg {
+  background-color: #000;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  opacity: 0.6 !important;
+}
+
+.modal__container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  background-color: #fff;
+  border-radius: 3px;
+  width: 90%;
+  height: 100%;
+  max-width: 350px;
+  max-height: 250px;
+}
+
+.modal__header {
+  padding: 10px;
+  text-align: center;
+}
+
+.modal__body {
+  padding: 10px;
+}
