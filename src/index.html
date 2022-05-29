@@ -98,11 +98,11 @@
     </header>
     <main class="app__content">
       <div class="app__modal app__modal--share fade" :class="{'show modal-active': modelIsOpen }">
-        <div class="modal__bg" @click="modelOpen"></div>
+        <div class="modal__bg" @click="triggerModal"></div>
         <div class="modal__container">
           <div class="modal__header">
             <h1 class="modal__heading">Share this signature</h1>
-            <a class="modal__close" tabindex="0" role="button" @click="modelOpen">close</a>
+            <a class="modal__close" tabindex="0" role="button" @click="triggerModal">close</a>
 
           </div>
           <div class="modal__body">
@@ -842,7 +842,6 @@
         buildShareParam(key) {
           return encodeURI(`${key}=${root[key]}`);
         },
-        // TODO: finish working on share functionality, like setting and reading the query string
         handleShare(event) {
           let query = '';
           let queryParams = new URLSearchParams(window.location.search);
@@ -868,20 +867,12 @@
             }
             queryParams.append(queryParam[0], queryParam[1]);
           });
-          // TODO: create modal and add url to copy (research basic share capabilities)
-          console.log(...queryParams.entries());
-          //trigger a popup or toast
-          this.handleModal(windowUrl + query);
+          // concat the URL origin + pathname + querystring and then trigger a popup passing the share url
+          this.handleModal(windowUrl.origin + windowUrl.pathname + query);
         },
         handleModal(urlString) {
-          this.modelOpen()
+          this.triggerModal();
           this.shareURL = urlString;
-          // if (!this.modelOpen) {
-
-          // } else {
-
-          // }
-
         },
         handleQuery(params) {
           // check and set field values based on params
@@ -905,7 +896,8 @@
                 }
               } else {
                 if (this[searchEntryName] !== searchEntryValue) {
-                  this[searchEntryName] = searchEntryValue;
+                  // add back the plus for country code if we're dealing with mainPhoneNum --> this could be better
+                  this[searchEntryName] = (this[searchEntryName] === this.mainPhoneNum ? "+" : "") + searchEntryValue;
                 }
               }
             }
@@ -964,7 +956,6 @@
           }
           this.handleCopyToClipboardBtn();
         },
-        // todo: fix share url when visiting app that already has a query string
         getShareURL(e) {
           e.preventDefault();
           const shareLink = this.shareURL;
@@ -1061,14 +1052,10 @@
             mainNum = cleanNum.replace(/(\d{3})(\d{3})(\d{4})/, countryCode + " " + phoneFormat);
             validNum = mainNum;
           }
-
           this.mainPhoneNum = validNum;
         },
-        modelOpen() {
+        triggerModal() {
           return this.modelIsOpen = !this.modelIsOpen;
-          // this.modelIsOpen = modalStatus;
-          // console.log(this.modelIsOpen)
-          // return modalStatus;
         }
       },
       computed: {
