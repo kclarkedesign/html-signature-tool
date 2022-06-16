@@ -16,6 +16,12 @@
   }
 }
 
+@media (max-height: 710px) {
+  .app__content {
+    height: 100%;
+  }
+}
+
 .app__editor {
   width: 100%;
   max-width: 35vw;
@@ -203,4 +209,8 @@ a:hover .gacct-user-avatar {
 
 .modal__input {
   width: 100%;
+}
+
+footer {
+  position: relative;
 }
