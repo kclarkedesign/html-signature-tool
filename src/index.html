@@ -815,6 +815,38 @@
       shareURL: ""
     };
 
+    // const genderPronouns = [
+    //   "co",
+    //   "e",
+    //   "eir",
+    //   "em",
+    //   "es",
+    //   "ey",
+    //   "fae",
+    //   "he",
+    //   "her",
+    //   "him",
+    //   "hir",
+    //   "hirs",
+    //   "hu",
+    //   "mx",
+    //   "she",
+    //   "sie",
+    //   "tem",
+    //   "ter",
+    //   "tey",
+    //   "their",
+    //   "them",
+    //   "they",
+    //   "xe",
+    //   "xem",
+    //   "xyr",
+    //   "ze",
+    //   "zie",
+    //   "zir",
+    //   "zirs",
+    // ];
+
     const app = Vue.createApp({
       data() {
         return defaultData
@@ -982,6 +1014,7 @@
             defaultBtn.classList.remove('btn-success');
           }, 2000);
         },
+        // TODO: update pronouns to be predifined and togglable
         insertPronoun(index) {
           // add new pronoun and pronoun increment id
           let increment = this.pronounIdIncrement + 1;
