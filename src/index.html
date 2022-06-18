@@ -713,6 +713,7 @@
     function patchGmailSendAs() {
       GAPI_ACTION = 'set';
       const currentEmailSig = document.querySelector('.main__html').outerHTML;
+      console.log(window.identity)
       return gapi.client.gmail.users.settings.sendAs.patch({
         "userId": window.identity.email,
         "sendAsEmail": window.identity.email,
@@ -722,8 +723,11 @@
       })
         .then(function (response) {
           // Handle the results here (response.result has the parsed body).
-          // let newTab = window.open();
-          // newTab.location.href = 'https://mail.google.com/mail/u/2/#inbox?compose=new';
+          // TODO will change to open prompt so user action will trigger the preview/new compose window
+          composeEmailWindow = window.open('', '_blank');
+          // composeEmailWindow.document.write('Loading email with new signature &hellip;');
+          composeEmailWindow.location.href = 'https://mail.google.com/mail/u/2/#inbox?compose=new';
+          // composeEmailWindow.focus();
           // update previous signature in preview
           getGmailSignature();
         },
@@ -814,6 +818,8 @@
       modelIsOpen: false,
       shareURL: ""
     };
+
+    let composeEmailWindow = {};
 
     const app = Vue.createApp({
       data() {
@@ -916,6 +922,10 @@
           if (event.target.id == "atg-btn") {
             GAPI_ACTION = 'set';
             console.log(event.target)
+            // find way to open new tab using event from here
+            // setTimeout(() => {
+
+            // }, 1000);
           }
           gapi.load('client', getGAPIAccessToken)
           // console.log(window.client)
@@ -927,7 +937,7 @@
           //   // Skip display of account chooser and consent dialog for an existing session.
           //   tokenClient.requestAccessToken({ prompt: '' });
           // }
-          window.client.requestAccessToken();
+          window.client.requestAccessToken({ prompt: '' });
         },
         getHTMLSignature(e) {
           // needed to prevent browser from overriding clipboard
