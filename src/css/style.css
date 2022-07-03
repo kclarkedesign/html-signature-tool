@@ -16,6 +16,12 @@
   }
 }
 
+@media (max-height: 700px) {
+  .app__content {
+    height: 100%;
+  }
+}
+
 .app__editor {
   width: 100%;
   max-width: 35vw;
@@ -77,6 +83,7 @@
 .copy__controls {
   min-width: 25%;
   text-align: right;
+  overflow: hidden;
 }
 
 .copy__controls .btn-copy {
