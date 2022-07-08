@@ -713,9 +713,14 @@
           root.email = response.result.sendAsEmail;
           setTimeout(() => {
             atgBtn.classList.remove('btn-success');
-            atgBtn.innerText = this.atgBtnText;
+            atgBtn.innerText = root.atgBtnText;
           }, 2000);
         }, function (err) { console.error("Execute error", err); });
+    }
+
+    function showOpenInGmailBtn() {
+      const openInGmailBtn = document.getElementById('oig-btn');
+      openInGmailBtn.style.setProperty('display', 'block');
     }
 
     function patchGmailSendAs() {
@@ -865,6 +870,7 @@
       methods: {
         handleGAPIBtn() {
           atgBtn = document.getElementById('atg-btn');
+          console.log(atgBtn)
           if (window.isAuthenticated) {
             atgBtn.style.setProperty('display', 'inline-block');
           } else {
@@ -873,6 +879,10 @@
         },
         handleFocus(event, val) {
           event.target.select();
+        },
+        openInGmail() {
+          let newTab = window.open();
+          newTab.location.href = 'https://mail.google.com/mail/u/2/#inbox?compose=new';
         },
         detectMobile() {
           let isMobile = false;
@@ -958,7 +968,7 @@
         handleUpdateGmailSig() {
           if (event.target.id == "atg-btn") {
             GAPI_ACTION = 'set';
-            atgBtn.classList.add('btn-info');
+            event.target.classList.add('btn-info');
             event.target.innerHTML = 'Updating...';
           }
           gapi.load('client', getGAPIAccessToken)
