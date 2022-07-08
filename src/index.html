@@ -657,6 +657,7 @@
         <button @click="handleCopyToClipboard" id="ctc-btn" class="btn btn-copy btn-primary m-4">Copy to
           clipboard</button>
         <button @click="handleShare" id="share-btn" class="btn btn-share btn-primary m-4">Share</button>
+        <br>
         <button @click="handleUpdateGmailSig" id="atg-btn" class="btn btn-secondary m-4" style="display: none;">Add to
           Gmail</button>
         <button @click="openInGmail" id="oig-btn" class="btn btn-secondary m-4" style="display: none;">Open
@@ -720,7 +721,7 @@
 
     function showOpenInGmailBtn() {
       const openInGmailBtn = document.getElementById('oig-btn');
-      openInGmailBtn.style.setProperty('display', 'block');
+      openInGmailBtn.style.setProperty('display', 'inline-block');
     }
 
     function patchGmailSendAs() {
@@ -738,7 +739,7 @@
           atgBtn.classList.remove('btn-info');
           atgBtn.classList.add('btn-success');
           atgBtn.innerText = "Added!";
-
+          showOpenInGmailBtn();
           // update previous signature in preview
           getGmailSignature();
         },
@@ -882,7 +883,8 @@
         },
         openInGmail() {
           let newTab = window.open();
-          newTab.location.href = 'https://mail.google.com/mail/u/2/#inbox?compose=new';
+          //detailed gmail url structure: https://stackoverflow.com/a/70030094/3623472
+          newTab.location.href = `https://mail.google.com/mail/u/${window.identity.email}#compose?compose=new`;
         },
         detectMobile() {
           let isMobile = false;
@@ -968,8 +970,10 @@
         handleUpdateGmailSig() {
           if (event.target.id == "atg-btn") {
             GAPI_ACTION = 'set';
-            event.target.classList.add('btn-info');
-            event.target.innerHTML = 'Updating...';
+            setTimeout(() => {
+              atgBtn.classList.add('btn-info');
+              atgBtn.innerHTML = 'Updating...';
+            }, 10);
           }
           gapi.load('client', getGAPIAccessToken)
           // console.log(window.client)
