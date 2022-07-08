@@ -109,8 +109,8 @@
             <div class="input-group">
 
               <input class="modal__input form-control" :value="shareURL" type="text" readonly aria-readonly="true">
-              <a href="" @click="getShareURL" class="modal__btn modal__copy btn btn-dark" tabindex="1"
-                role="button">Copy</a>
+              <a id="modal-ctc-btn" href="" @click="getShareURL" class="modal__btn modal__copy btn btn-dark"
+                tabindex="1" role="button">Copy</a>
             </div>
           </div>
           <div class="modal__footer">
@@ -1019,7 +1019,7 @@
             clipboardData.setData('text/html', htmlData);
             document.removeEventListener('copy', this.getHTMLSignature);
           }
-          this.handleCopyToClipboardBtn();
+          this.handleCopyToClipboardBtn('ctc-btn');
         },
         getShareURL(e) {
           e.preventDefault();
@@ -1035,10 +1035,12 @@
             ),
           });
           navigator.clipboard.write([clipboardItem]);
+          this.handleCopyToClipboardBtn('modal-ctc-btn');
         },
-        handleCopyToClipboardBtn() {
+        //TODO: make reusable for modal share copy
+        handleCopyToClipboardBtn(elemID) {
           const copiedTxt = 'Copied!'
-          const defaultBtn = document.getElementById('ctc-btn');
+          const defaultBtn = document.getElementById(elemID);
           const defaultBtnText = defaultBtn.innerText;
           defaultBtn.innerText = copiedTxt;
           defaultBtn.classList.add('btn-success');
