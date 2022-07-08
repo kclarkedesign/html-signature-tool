@@ -211,3 +211,11 @@ a:hover .gacct-user-avatar {
 .modal__input {
   width: 100%;
 }
+
+.icon-external-link {
+  width: 100%;
+  max-width: 15px;
+  padding: 0 0px 0 2px;
+  margin: 0 0 3px 0;
+  display: inline-block;
+}
