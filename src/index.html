@@ -659,6 +659,8 @@
         <button @click="handleShare" id="share-btn" class="btn btn-share btn-primary m-4">Share</button>
         <button @click="handleUpdateGmailSig" id="atg-btn" class="btn btn-secondary m-4" style="display: none;">Add to
           Gmail</button>
+        <button @click="openInGmail" id="oig-btn" class="btn btn-secondary m-4" style="display: none;">Open
+          Gmail</button>
       </div>
     </main>
     <footer class="footer mt-auto py-3 bg-dark">
@@ -676,6 +678,8 @@
     // https://stackoverflow.com/a/38552302/3623472
     // also see -> https://googleonetap.developer.li/assets/js/utils.js and https://stackoverflow.com/a/47574303/4064162
     // consider using JWT decoder
+
+    let atgBtn = {};
 
     function parseJwt(token) {
       var base64Url = token.split('.')[1];
@@ -707,6 +711,10 @@
           console.log(response);
           root.existingSig = response.result.signature;
           root.email = response.result.sendAsEmail;
+          setTimeout(() => {
+            atgBtn.classList.remove('btn-success');
+            atgBtn.innerText = this.atgBtnText;
+          }, 2000);
         }, function (err) { console.error("Execute error", err); });
     }
 
@@ -721,9 +729,11 @@
         }
       })
         .then(function (response) {
-          // Handle the results here (response.result has the parsed body).
-          let newTab = window.open();
-          newTab.location.href = 'https://mail.google.com/mail/u/2/#inbox?compose=new';
+          // handle UI for atg-btn
+          atgBtn.classList.remove('btn-info');
+          atgBtn.classList.add('btn-success');
+          atgBtn.innerText = "Added!";
+
           // update previous signature in preview
           getGmailSignature();
         },
@@ -812,7 +822,8 @@
       zip: "10004",
       existingSig: "",
       modelIsOpen: false,
-      shareURL: ""
+      shareURL: "",
+      atgBtnText: "Add to Gmail"
     };
 
     // const genderPronouns = [
@@ -853,11 +864,11 @@
       },
       methods: {
         handleGAPIBtn() {
-          const addToGmailBtn = document.getElementById('atg-btn');
+          atgBtn = document.getElementById('atg-btn');
           if (window.isAuthenticated) {
-            addToGmailBtn.style.setProperty('display', 'inline-block');
+            atgBtn.style.setProperty('display', 'inline-block');
           } else {
-            addToGmailBtn.style.setProperty('display', 'none');
+            atgBtn.style.setProperty('display', 'none');
           }
         },
         handleFocus(event, val) {
@@ -947,7 +958,8 @@
         handleUpdateGmailSig() {
           if (event.target.id == "atg-btn") {
             GAPI_ACTION = 'set';
-            console.log(event.target)
+            atgBtn.classList.add('btn-info');
+            event.target.innerHTML = 'Updating...';
           }
           gapi.load('client', getGAPIAccessToken)
           // console.log(window.client)
