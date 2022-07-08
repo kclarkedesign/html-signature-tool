@@ -714,7 +714,6 @@
       gapi.client.gmail.users.settings.sendAs.get({ "userId": window.identity.email, "sendAsEmail": window.identity.email })
         // gapi.client.gmail.users.settings.sendAs.list({ "userId": window.identity.email })
         .then(function (response) {
-          console.log(response);
           root.existingSig = response.result.signature;
           root.email = response.result.sendAsEmail;
           setTimeout(() => {
@@ -757,7 +756,6 @@
         "personFields": "emailAddresses,names,genders,phoneNumbers,organizations"
       })
         .then(function (response) {
-          console.log(response)
           const resp = response.result;
           if (resp.names) {
             const primaryName = findPrimary(resp.names, 'primary', true);
@@ -1037,7 +1035,6 @@
           navigator.clipboard.write([clipboardItem]);
           this.handleCopyToClipboardBtn('modal-ctc-btn');
         },
-        //TODO: make reusable for modal share copy
         handleCopyToClipboardBtn(elemID) {
           const copiedTxt = 'Copied!'
           const defaultBtn = document.getElementById(elemID);
