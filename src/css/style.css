@@ -90,6 +90,7 @@
   cursor: pointer;
   position: relative;
   top: -3px;
+  user-select: none;
 }
 
 .btn-pill:hover {

@@ -189,8 +189,8 @@
           <div class="mb-3">
             <label for="email" class="form-label">Disclaimer</label>
             <label for="btn-disclaimer-legal"><input class="form-check-input input--hidden" type="checkbox" value=""
-                id="btn-disclaimer-legal" @click="insertDisclaimer(legalDisclaimerText)" /><span
-                class="btn-pill">Legal</span></label>
+                id="btn-disclaimer-legal" @click="insertDisclaimer(legalDisclaimerText)"
+                v-model="toggleDisclaimerItem" /><span class=" btn-pill">Legal</span></label>
             <textarea @focus="handleFocus($event, disclaimer)" rows="4" class="form-control" id="disclaimer"
               aria-describedby="disclaimerHelp" v-model="disclaimer"></textarea>
             <!-- <div id="emailHelp" class="form-text">
@@ -850,6 +850,7 @@
       modelIsOpen: false,
       shareURL: "",
       atgBtnText: "Add to Gmail",
+      toggleDisclaimerItem: false,
       disclaimer: "",
       legalDisclaimerText: `The information transmitted is intended only for the person or 
       entity to which it is addressed and may contain confidential and/or privileged material.
@@ -930,7 +931,7 @@
         handleShare(event) {
           let query = '';
           let queryParams = new URLSearchParams(window.location.search);
-          const shareFields = ["personName", "pronouns", "jobTitle", "mainPhoneNum", "website", "email"];
+          const shareFields = ["personName", "pronouns", "jobTitle", "mainPhoneNum", "website", "email", "disclaimer"];
 
           shareFields.forEach((field, index) => {
             let queryParam = [];
@@ -965,6 +966,10 @@
             const searchEntryName = filterArr[0];
             const searchEntryValue = filterArr[1];
             if (Object.hasOwn(this, searchEntryName)) {
+              if (searchEntryName == "disclaimer") {
+                this.toggleDisclaimerItem = (searchEntryValue !== "") ? true : false;
+              }
+
               if (searchEntryName === "pronouns") {
                 // disable pronouns if none are found
                 if (searchEntryValue == "") {
@@ -1073,7 +1078,10 @@
         },
         // toggle the given disclaimer text
         insertDisclaimer(txt) {
-          this.disclaimer = (this.disclaimer === "") ? txt.replace(/\n\s+/g, '') : "";
+          const disclaimerHasText = (this.disclaimer === "") ? true : false;
+
+          this.toggleDisclaimerItem = disclaimerHasText
+          this.disclaimer = (disclaimerHasText) ? txt.replace(/\n\s+/g, '') : "";
         },
         // TODO: update pronouns to be predefined and togglable
         insertPronoun(index) {
