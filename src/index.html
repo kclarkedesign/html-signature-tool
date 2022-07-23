@@ -186,6 +186,14 @@
             We'll never share your email with anyone else.
           </div> -->
           </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Disclaimer</label>
+            <textarea @focus="handleFocus($event, disclaimer)" type="text" class="form-control" id="disclaimer"
+              aria-describedby="disclaimerHelp" v-model="disclaimer"></textarea>
+            <!-- <div id="emailHelp" class="form-text">
+                      We'll never share your email with anyone else.
+                    </div> -->
+          </div>
         </form>
       </div>
       <div class="app__preview">
@@ -632,8 +640,9 @@
                               </td>
                             </tr>
                             <tr>
-                              <td style="padding-top: 24px">
-                                <!-- TODO: add in area for signature footer copy -->
+                              <td id="disclaimerText" class="js-disclaimer"
+                                style="line-height: 1.2; color-scheme: light; color: rgb(33, 33, 33); font-family: Arial; font-size: 12px;padding-top: 24px">
+                                {{disclaimer}}
                               </td>
                             </tr>
                           </tbody>
@@ -837,8 +846,18 @@
       existingSig: "",
       modelIsOpen: false,
       shareURL: "",
-      atgBtnText: "Add to Gmail"
+      atgBtnText: "Add to Gmail",
+      disclaimer: ""
     };
+    //--TODO: Add ability to add text using checkbox or button
+    const legalDisclaimerText = `The information transmitted is intended only for the person or 
+      entity to which it is addressed and may contain confidential and/or privileged material.
+      Any review, retransmission, dissemination, or other use of, or taking of any action in reliance upon,
+      this information by persons or entities other than the intended recipient is prohibited. 
+      If you received this in error, please contact the sender and delete the material from any computer. 
+      This message cannot be guaranteed to be secure or error-free. We reserve the right to monitor
+      and review the content of all email communications sent or received. Emails sent to or from
+      this address may be stored in accordance with regulatory requirements.`;
 
     // const genderPronouns = [
     //   "co",
