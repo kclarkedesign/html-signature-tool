@@ -188,6 +188,9 @@
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">Disclaimer</label>
+            <label for="btn-disclaimer-legal"><input class="form-check-input input--hidden" type="checkbox" value=""
+                id="btn-disclaimer-legal" @click="insertDisclaimer(legalDisclaimerText)" /><span
+                class="btn-pill">Legal</span></label>
             <textarea @focus="handleFocus($event, disclaimer)" rows="4" class="form-control" id="disclaimer"
               aria-describedby="disclaimerHelp" v-model="disclaimer"></textarea>
             <!-- <div id="emailHelp" class="form-text">
@@ -847,18 +850,16 @@
       modelIsOpen: false,
       shareURL: "",
       atgBtnText: "Add to Gmail",
-      disclaimer: ""
-    };
-    //--TODO: Add ability to add text using checkbox or button
-    const legalDisclaimerText = `The information transmitted is intended only for the person or 
+      disclaimer: "",
+      legalDisclaimerText: `The information transmitted is intended only for the person or 
       entity to which it is addressed and may contain confidential and/or privileged material.
       Any review, retransmission, dissemination, or other use of, or taking of any action in reliance upon,
       this information by persons or entities other than the intended recipient is prohibited. 
       If you received this in error, please contact the sender and delete the material from any computer. 
       This message cannot be guaranteed to be secure or error-free. We reserve the right to monitor
       and review the content of all email communications sent or received. Emails sent to or from
-      this address may be stored in accordance with regulatory requirements.`;
-
+      this address may be stored in accordance with regulatory requirements.`
+    };
     // const genderPronouns = [
     //   "co",
     //   "e",
@@ -1069,6 +1070,10 @@
             defaultBtn.innerText = defaultBtnText;
             defaultBtn.classList.remove('btn-success');
           }, 2000);
+        },
+        // toggle the given disclaimer text
+        insertDisclaimer(txt) {
+          this.disclaimer = (this.disclaimer === "") ? txt.replace(/\n\s+/g, '') : "";
         },
         // TODO: update pronouns to be predefined and togglable
         insertPronoun(index) {

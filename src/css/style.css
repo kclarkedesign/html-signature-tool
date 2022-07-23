@@ -80,6 +80,31 @@
   align-items: center;
 }
 
+.btn-pill {
+  font-size: 0.75em;
+  padding: 0.275rem 0.55rem;
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  margin: 0 5px;
+  cursor: pointer;
+  position: relative;
+  top: -3px;
+}
+
+.btn-pill:hover {
+  background-color: rgba(204, 204, 204, 0.5);
+}
+
+.input--hidden {
+  display: none !important;
+  visibility: hidden;
+}
+
+.input--hidden:checked + .btn-pill {
+  background-color: #ccc;
+}
+
 .copy__controls {
   min-width: 25%;
   text-align: right;
