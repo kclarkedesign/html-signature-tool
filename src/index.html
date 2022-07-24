@@ -188,9 +188,16 @@
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">Disclaimer</label>
-            <label for="btn-disclaimer-legal"><input class="form-check-input input--hidden" type="checkbox" value=""
-                id="btn-disclaimer-legal" @click="insertDisclaimer(legalDisclaimerText)"
-                v-model="toggleDisclaimerItem" /><span class=" btn-pill">Legal</span></label>
+            <label for="btn-disclaimer-none"><input class="form-check-input input--hidden" checked type="radio"
+                name="disclaimerRadio" value="" id="btn-disclaimer-none" @click="insertDisclaimer($event, '')" /><span
+                class=" btn-pill">None</span></label>
+            <label for="btn-disclaimer-legal"><input class="form-check-input input--hidden" type="radio"
+                name="disclaimerRadio" value="" id="btn-disclaimer-legal"
+                @click="insertDisclaimer($event, legalDisclaimerText)" /><span class=" btn-pill">Legal</span></label>
+            <label for="btn-disclaimer-responseTime"><input class="form-check-input input--hidden" type="radio"
+                name="disclaimerRadio" value="" id="btn-disclaimer-responseTime"
+                @click="insertDisclaimer($event, responseTimeDisclaimerText)" /><span class=" btn-pill">Response
+                Time</span></label>
             <textarea @focus="handleFocus($event, disclaimer)" rows="4" class="form-control" id="disclaimer"
               aria-describedby="disclaimerHelp" v-model="disclaimer"></textarea>
             <!-- <div id="emailHelp" class="form-text">
@@ -850,7 +857,7 @@
       modelIsOpen: false,
       shareURL: "",
       atgBtnText: "Add to Gmail",
-      toggleDisclaimerItem: false,
+      dTxtItem: 'btn-disclaimer-none',
       disclaimer: "",
       legalDisclaimerText: `The information transmitted is intended only for the person or 
       entity to which it is addressed and may contain confidential and/or privileged material.
@@ -859,7 +866,10 @@
       If you received this in error, please contact the sender and delete the material from any computer. 
       This message cannot be guaranteed to be secure or error-free. We reserve the right to monitor
       and review the content of all email communications sent or received. Emails sent to or from
-      this address may be stored in accordance with regulatory requirements.`
+      this address may be stored in accordance with regulatory requirements.`,
+      responseTimeDisclaimerText: `Due to an increased number of support requests we are currently receiving, 
+      it may take up to X days to receive a response. We always respond to licensed users first. 
+      We apologize for the inconvenience.`
     };
     // const genderPronouns = [
     //   "co",
@@ -931,7 +941,7 @@
         handleShare(event) {
           let query = '';
           let queryParams = new URLSearchParams(window.location.search);
-          const shareFields = ["personName", "pronouns", "jobTitle", "mainPhoneNum", "website", "email", "disclaimer"];
+          const shareFields = ["personName", "pronouns", "jobTitle", "mainPhoneNum", "website", "email", "dTxtItem", "disclaimer"];
 
           shareFields.forEach((field, index) => {
             let queryParam = [];
@@ -966,8 +976,9 @@
             const searchEntryName = filterArr[0];
             const searchEntryValue = filterArr[1];
             if (Object.hasOwn(this, searchEntryName)) {
-              if (searchEntryName == "disclaimer") {
-                this.toggleDisclaimerItem = (searchEntryValue !== "") ? true : false;
+              if (searchEntryName == "dTxtItem") {
+                const selectedDisclaimerbtn = document.getElementById(searchEntryValue)
+                selectedDisclaimerbtn.checked = true;
               }
 
               if (searchEntryName === "pronouns") {
@@ -1077,11 +1088,11 @@
           }, 2000);
         },
         // toggle the given disclaimer text
-        // TODO: Make it easier to add multiple types of text and select correct pill
-        insertDisclaimer(txt) {
-          const disclaimerHasText = (this.disclaimer === "") ? true : false;
+        insertDisclaimer(e, txt) {
+          const radioChecked = e.target.checked === true
+          const disclaimerHasText = (radioChecked) ? true : false;
 
-          this.toggleDisclaimerItem = disclaimerHasText
+          this.dTxtItem = e.target.id;
           this.disclaimer = (disclaimerHasText) ? txt.replace(/\n\s+/g, '') : "";
         },
         // TODO: update pronouns to be predefined and togglable
