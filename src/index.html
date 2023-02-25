@@ -188,10 +188,23 @@
           </div> -->
           </div>
           <div class="mb-3">
-            <label for="email" class="form-label">Disclaimer</label>
+            <legend class="form-label">Award Badge(s)</legend>
+            <label for="btn-badge-candid" class="form-label">
+              <input class="form-check-input input--hidden" type="checkbox" name="badgeCandid" value=""
+                id="btn-badge-candid" @click="handleBadges($event, awards.candid)" /><span
+                class=" btn-pill">Candid</span>
+            </label>
+            <!-- <div class="badge-preview"><a class="twr__footer__award guidestar-candid"
+                href="https://www.guidestar.org/profile/shared/6ded106f-e539-4e96-bc40-060c7e3d1bdf"
+                target="_blank"><img src="https://widgets.guidestar.org/TransparencySeal/9364116">
+              </a>
+            </div> -->
+          </div>
+          <div class="mb-3">
+            <label for="disclaimer" class="form-label">Disclaimer</label>
             <label for="btn-disclaimer-none"><input class="form-check-input input--hidden" checked type="radio"
                 name="disclaimerRadio" value="" id="btn-disclaimer-none" @click="insertDisclaimer($event, '')" /><span
-                class=" btn-pill">None</span></label>
+                class=" btn-pill">Blank</span></label>
             <label for="btn-disclaimer-legal"><input class="form-check-input input--hidden" type="radio"
                 name="disclaimerRadio" value="" id="btn-disclaimer-legal"
                 @click="insertDisclaimer($event, legalDisclaimerText)" /><span class=" btn-pill">Legal</span></label>
@@ -651,6 +664,11 @@
                               </td>
                             </tr>
                             <tr>
+                              <td id="awards" class="js-awards">
+
+                              </td>
+                            </tr>
+                            <tr>
                               <td id="disclaimerText" class="js-disclaimer"
                                 style="line-height: 1.2; color-scheme: light; color: rgb(33, 33, 33); font-family: Arial; font-size: 12px;padding-top: 24px">
                                 {{disclaimer}}
@@ -861,6 +879,13 @@
       atgBtnText: "Add to Gmail",
       dTxtItem: 'btn-disclaimer-none',
       disclaimer: "",
+      awards: {
+        candid: {
+          html: `<a class="twr__footer__award guidestar-candid" href="https://www.guidestar.org/profile/shared/6ded106f-e539-4e96-bc40-060c7e3d1bdf" target="_blank"><img src="https://widgets.guidestar.org/TransparencySeal/9364116"></a>`,
+          width: 115,
+          index: 0
+        },
+      },
       legalDisclaimerText: `The information transmitted is intended only for the person or 
       entity to which it is addressed and may contain confidential and/or privileged material. 
       Any review, retransmission, dissemination, or other use of, or taking of any action in reliance upon, 
@@ -1097,6 +1122,25 @@
           this.dTxtItem = e.target.id;
           this.disclaimer = (disclaimerHasText) ? txt.replace(/\n\s+/g, '') : "";
         },
+        // Handle badges
+        handleBadges(e, badge) {
+
+          const visibleStyles = "line-height: 1.2; color-scheme: light; color: rgb(33, 33, 33); font-family: Arial; font-size: 12px; padding-top: 24px;";
+          const hiddenStyles = "";
+          const checkboxChecked = e.target.checked === true
+          const showBadge = (checkboxChecked) ? true : false;
+          const awardsContainer = document.getElementById("awards");
+          const prevAwardsContainerHTML = awardsContainer.innerHTML;
+
+          // TODO allow for multiple badges, and make them independently toggleable
+          awardsContainer.setAttribute('style', (showBadge) ? visibleStyles : hiddenStyles);
+          awardsContainer.innerHTML = (showBadge) ? badge.html : "";
+          (showBadge) ? awardsContainer.childNodes[badge.index].children[badge.index].setAttribute("width", badge.width) : "";
+          //console.log(awardsContainer.childNodes);
+
+          //this.dTxtItem = e.target.id;
+          //this.disclaimer = (disclaimerHasText) ? txt.replace(/\n\s+/g, '') : "";
+        },
         // TODO: update pronouns to be predefined and togglable
         insertPronoun(index) {
           // add new pronoun and pronoun increment id
@@ -1194,6 +1238,9 @@
             (item) => item.text.length != 0
           );
           return this.pronouns.length > 0 && containsPronoun;
+        },
+        getWidth(badgeType) {
+          return this.awards[badgeType].width;
         }
       },
       async mounted() {
