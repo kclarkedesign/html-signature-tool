@@ -305,7 +305,7 @@
                                       font-family: Arial;
                                       text-transform: initial;
                                       font-weight: bold;
-                                      color: #055ea4;
+                                      color: #055EA4;
                                     ">
                                   {{orgName}}
                                 </span>
@@ -881,9 +881,10 @@
       disclaimer: "",
       awards: {
         candid: {
-          html: `<a class="twr__footer__award guidestar-candid" href="https://www.guidestar.org/profile/shared/6ded106f-e539-4e96-bc40-060c7e3d1bdf" target="_blank"><img src="https://widgets.guidestar.org/TransparencySeal/9364116"></a>`,
-          width: 115,
-          index: 0
+          html: `<a class="twr__footer__award guidestar-candid" href="https://www.guidestar.org/profile/shared/6ded106f-e539-4e96-bc40-060c7e3d1bdf" target="_blank"><img src="https://www.thewritingrevolution.org/img/email/v1/badges/awards-candid-transparency_2023_282x282_9364116.png"></a>`,
+          width: 90,
+          index: 0,
+          active: false
         },
       },
       legalDisclaimerText: `The information transmitted is intended only for the person or 
@@ -968,7 +969,7 @@
         handleShare(event) {
           let query = '';
           let queryParams = new URLSearchParams(window.location.search);
-          const shareFields = ["personName", "pronouns", "jobTitle", "mainPhoneNum", "website", "email", "dTxtItem", "disclaimer"];
+          const shareFields = ["personName", "pronouns", "jobTitle", "mainPhoneNum", "website", "email", "dTxtItem", "awards", "disclaimer"];
 
           shareFields.forEach((field, index) => {
             let queryParam = [];
@@ -1007,7 +1008,9 @@
                 const selectedDisclaimerbtn = document.getElementById(searchEntryValue)
                 selectedDisclaimerbtn.checked = true;
               }
+              if (searchEntryName === "pronouns") {
 
+              }
               if (searchEntryName === "pronouns") {
                 // disable pronouns if none are found
                 if (searchEntryValue == "") {
@@ -1128,7 +1131,7 @@
           const visibleStyles = "line-height: 1.2; color-scheme: light; color: rgb(33, 33, 33); font-family: Arial; font-size: 12px; padding-top: 24px;";
           const hiddenStyles = "";
           const checkboxChecked = e.target.checked === true
-          const showBadge = (checkboxChecked) ? true : false;
+          const showBadge = badge.active = (checkboxChecked) ? true : false;
           const awardsContainer = document.getElementById("awards");
           const prevAwardsContainerHTML = awardsContainer.innerHTML;
 
@@ -1136,7 +1139,8 @@
           awardsContainer.setAttribute('style', (showBadge) ? visibleStyles : hiddenStyles);
           awardsContainer.innerHTML = (showBadge) ? badge.html : "";
           (showBadge) ? awardsContainer.childNodes[badge.index].children[badge.index].setAttribute("width", badge.width) : "";
-          //console.log(awardsContainer.childNodes);
+
+          console.log(badge);
 
           //this.dTxtItem = e.target.id;
           //this.disclaimer = (disclaimerHasText) ? txt.replace(/\n\s+/g, '') : "";
@@ -1239,9 +1243,9 @@
           );
           return this.pronouns.length > 0 && containsPronoun;
         },
-        getWidth(badgeType) {
-          return this.awards[badgeType].width;
-        }
+        // getWidth(badgeType) {
+        // return this.awards[badgeType].width;
+        //}
       },
       async mounted() {
         if (windowUrl.search !== "") {
