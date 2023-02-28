@@ -188,11 +188,10 @@
           </div> -->
           </div>
           <div class="mb-3">
-            <legend class="form-label">Award Badge(s)</legend>
+            <label class="form-label">Award Badge(s)</label>
             <label for="btn-badge-candid" class="form-label">
               <input class="form-check-input input--hidden" type="checkbox" name="badgeCandid" value=""
-                id="btn-badge-candid" @click="handleBadges($event, awards.candid)" /><span
-                class=" btn-pill">Candid</span>
+                id="btn-badge-candid" v-model="awards.candid.active" /><span class=" btn-pill">Candid</span>
             </label>
             <!-- <div class="badge-preview"><a class="twr__footer__award guidestar-candid"
                 href="https://www.guidestar.org/profile/shared/6ded106f-e539-4e96-bc40-060c7e3d1bdf"
@@ -664,7 +663,7 @@
                               </td>
                             </tr>
                             <tr>
-                              <td id="awards" class="js-awards">
+                              <td id="awards-container" class="js-awards">
 
                               </td>
                             </tr>
@@ -984,7 +983,24 @@
 
               query = `${query}&${field}=${pronounsVal}`;
               queryParam.push(field);
-              queryParam.push(pronounsVal)
+              queryParam.push(pronounsVal);
+
+            } else if (field === "awards") {
+              let awardsArr = [];
+              let awardsVal = "";
+              for (let award in Object.entries(this.awards)) {
+                const awardObj = JSON.parse(JSON.stringify(this.awards));
+                const awardName = Object.keys(awardObj)[0];
+
+                if (JSON.parse(JSON.stringify(this.awards[awardName].active)) === true) {
+                  awardsArr.push(awardName);
+                }
+              }
+              awardsVal = awardsArr.join("%20");
+              query = `${query}&${field}=${awardsVal}`;
+              queryParam.push(field);
+              queryParam.push(awardsVal);
+
             } else {
               queryParam = this.buildShareParam(field).split("=")
               query = query + (index === 0 ? "?" : "&") + this.buildShareParam(field);
@@ -1008,9 +1024,7 @@
                 const selectedDisclaimerbtn = document.getElementById(searchEntryValue)
                 selectedDisclaimerbtn.checked = true;
               }
-              if (searchEntryName === "pronouns") {
 
-              }
               if (searchEntryName === "pronouns") {
                 // disable pronouns if none are found
                 if (searchEntryValue == "") {
@@ -1024,6 +1038,15 @@
                   })
                   // update pronouns in v-model
                   this.pronouns = updatedPronouns;
+                }
+              } else if (searchEntryName === "awards") {
+                // if awards has an entry, create an array
+                if (searchEntryValue != "") {
+                  const awardsArr = searchEntryValue.split(" ");
+                  // loop through array and update active to true
+                  for (let award in awardsArr) {
+                    this.awards[searchEntryValue].active = true;
+                  }
                 }
               } else {
                 if (this[searchEntryName] !== searchEntryValue) {
@@ -1126,21 +1149,19 @@
           this.disclaimer = (disclaimerHasText) ? txt.replace(/\n\s+/g, '') : "";
         },
         // Handle badges
-        handleBadges(e, badge) {
+        handleBadges(badge) {
 
           const visibleStyles = "line-height: 1.2; color-scheme: light; color: rgb(33, 33, 33); font-family: Arial; font-size: 12px; padding-top: 24px;";
           const hiddenStyles = "";
-          const checkboxChecked = e.target.checked === true
+          const checkboxChecked = badge.active === true
           const showBadge = badge.active = (checkboxChecked) ? true : false;
-          const awardsContainer = document.getElementById("awards");
+          const awardsContainer = document.getElementById("awards-container");
           const prevAwardsContainerHTML = awardsContainer.innerHTML;
 
           // TODO allow for multiple badges, and make them independently toggleable
           awardsContainer.setAttribute('style', (showBadge) ? visibleStyles : hiddenStyles);
           awardsContainer.innerHTML = (showBadge) ? badge.html : "";
           (showBadge) ? awardsContainer.childNodes[badge.index].children[badge.index].setAttribute("width", badge.width) : "";
-
-          console.log(badge);
 
           //this.dTxtItem = e.target.id;
           //this.disclaimer = (disclaimerHasText) ? txt.replace(/\n\s+/g, '') : "";
@@ -1243,9 +1264,15 @@
           );
           return this.pronouns.length > 0 && containsPronoun;
         },
-        // getWidth(badgeType) {
-        // return this.awards[badgeType].width;
-        //}
+      },
+      watch: {
+        // watcher for award badge, used for first load
+        'awards.candid': {
+          handler: function (after, before) {
+            this.handleBadges(after)
+          },
+          deep: true,
+        }
       },
       async mounted() {
         if (windowUrl.search !== "") {
