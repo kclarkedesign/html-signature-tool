@@ -193,6 +193,10 @@
               <input class="form-check-input input--hidden" type="checkbox" name="badgeCandid" value=""
                 id="btn-badge-candid" v-model="awards.candid.active" /><span class=" btn-pill">Candid</span>
             </label>
+            <label for="btn-badge-cfre" class="form-label">
+              <input class="form-check-input input--hidden" type="checkbox" name="badgeCFRE" value=""
+                id="btn-badge-cfre" v-model="awards.cfre.active" /><span class=" btn-pill">CFRE</span>
+            </label>
             <!-- <div class="badge-preview"><a class="twr__footer__award guidestar-candid"
                 href="https://www.guidestar.org/profile/shared/6ded106f-e539-4e96-bc40-060c7e3d1bdf"
                 target="_blank"><img src="https://widgets.guidestar.org/TransparencySeal/9364116">
@@ -663,9 +667,30 @@
                               </td>
                             </tr>
                             <tr>
-                              <td id="awards-container" class="js-awards">
-
+                              <td :style="areAwardsActive ? activeAwardsStyle() : inactiveAwardsStyle()">
                               </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <table id="awards-container" class="js-awards" border="0" cellpadding="0"
+                                  cellspacing="0">
+                                  <tr>
+                                    <td width="50%" style="padding-right: 10px;" v-if="awards.cfre.active"
+                                      v-html="getAwardHTML(awards.cfre)"></td>
+                                    <td width="50%" style="padding-right: 10px;" v-if="awards.candid.active"
+                                      v-html="getAwardHTML(awards.candid)"></td>
+                                  </tr>
+                                </table>
+                              </td>
+
+                              <!-- <td>
+
+                                <table id="awards-container" class="js-awards"
+                                  :style="areAwardsActive ? activeAwardsStyle() : inactiveAwardsStyle()" border="0"
+                                  cellpadding="0" cellspacing="0">
+                                  <tr></tr>
+                                </table>
+                              </td> -->
                             </tr>
                             <tr>
                               <td id="disclaimerText" class="js-disclaimer"
@@ -880,11 +905,20 @@
       disclaimer: "",
       awards: {
         candid: {
-          html: `<span class="twr__footer__award guidestar-candid"><img src="https://www.thewritingrevolution.org/img/email/v1/badges/awards-candid-transparency_2023_282x282_9364116.png"></span>`,
+          html: `<table><tr><td class="twr__footer__award guidestar-candid" style="padding-right: 10px"><img src="https://www.thewritingrevolution.org/img/email/v1/badges/awards-candid-transparency_2023_282x282_9364116.png"></td></tr></table>`,
           width: 90,
           index: 0,
           active: false,
-          link: "https://www.guidestar.org/profile/shared/6ded106f-e539-4e96-bc40-060c7e3d1bdf"
+          link: "https://www.guidestar.org/profile/shared/6ded106f-e539-4e96-bc40-060c7e3d1bdf",
+          showLink: false,
+        },
+        cfre: {
+          html: `<table><tr><td class="twr__footer__award cfre-international" style="padding-right: 10px"><a href="https://www.credly.com/badges/d680cdd8-32b3-4bc0-b7fc-9776054cbc06/public_url" target="_blank" rel="noopener noreferrer" style="color-scheme: light only; text-decoration: none; font-size: 12px; font-family: Arial;"><img src="https://www.thewritingrevolution.org/img/email/v1/badges/badge-cfre-certification_2023_282x282.png"></a></td></tr></table>`,
+          width: 120,
+          index: 0,
+          active: false,
+          link: "https://www.credly.com/badges/d680cdd8-32b3-4bc0-b7fc-9776054cbc06/public_url",
+          showLink: true,
         },
       },
       legalDisclaimerText: `The information transmitted is intended only for the person or 
@@ -989,14 +1023,14 @@
             } else if (field === "awards") {
               let awardsArr = [];
               let awardsVal = "";
-              for (let award in Object.entries(this.awards)) {
-                const awardObj = JSON.parse(JSON.stringify(this.awards));
-                const awardName = Object.keys(awardObj)[0];
-
-                if (JSON.parse(JSON.stringify(this.awards[awardName].active)) === true) {
-                  awardsArr.push(awardName);
+              const awardObj = JSON.parse(JSON.stringify(this.awards));
+              const awardNameArr = Object.keys(awardObj);
+              awardNameArr.forEach((name) => {
+                if (JSON.parse(JSON.stringify(this.awards[name].active)) === true) {
+                  awardsArr.push(name);
                 }
-              }
+              })
+
               awardsVal = awardsArr.join("%20");
               query = `${query}&${field}=${awardsVal}`;
               queryParam.push(field);
@@ -1044,10 +1078,11 @@
                 // if awards has an entry, create an array
                 if (searchEntryValue != "") {
                   const awardsArr = searchEntryValue.split(" ");
+
                   // loop through array and update active to true
-                  for (let award in awardsArr) {
-                    this.awards[searchEntryValue].active = true;
-                  }
+                  awardsArr.forEach((award) => {
+                    this.awards[award].active = true;
+                  });
                 }
               } else {
                 if (this[searchEntryName] !== searchEntryValue) {
@@ -1151,21 +1186,40 @@
         },
         // Handle badges
         handleBadges(badge) {
+          //const hiddenStyles = "";
+          //const checkboxChecked = badge.active === true
+          //const showBadge = badge.active = (checkboxChecked) ? true : false;
+          //const awardsContainer = document.getElementById("awards-container");
+          //const prevAwardsContainerHTML = awardsContainer.innerHTML;
+          //const awardsContainerEmpty = prevAwardsContainerHTML === "";
 
-          const visibleStyles = "line-height: 1.2; color-scheme: light; color: rgb(33, 33, 33); font-family: Arial; font-size: 12px; padding-top: 24px;";
-          const hiddenStyles = "";
-          const checkboxChecked = badge.active === true
-          const showBadge = badge.active = (checkboxChecked) ? true : false;
-          const awardsContainer = document.getElementById("awards-container");
-          const prevAwardsContainerHTML = awardsContainer.innerHTML;
+          //const setCurrentBadge = (badge, currentHTML) => {
+          //const domParser = new DOMParser();
+          //const doc = domParser.parseFromString(badge.html, "text/html");
+          //const td = doc.querySelector("td");
 
-          // TODO allow for multiple badges, and make them independently toggleable
-          awardsContainer.setAttribute('style', (showBadge) ? visibleStyles : hiddenStyles);
-          awardsContainer.innerHTML = (showBadge) ? badge.html : "";
-          (showBadge) ? awardsContainer.childNodes[badge.index].children[badge.index].setAttribute("width", badge.width) : "";
+          //if (td) {
+          //const img = td.querySelector("img");
+          //if (img) {
+          //img.width = badge.width;
+          //}
 
-          //this.dTxtItem = e.target.id;
-          //this.disclaimer = (disclaimerHasText) ? txt.replace(/\n\s+/g, '') : "";
+          //const updatedBadgeHTML = td.outerHTML;
+
+          //if (showBadge) {
+          // Combine the badge with currentHTML
+          //const combinedHTML = currentHTML + updatedBadgeHTML;
+          //return combinedHTML;
+          //} else {
+          // Remove the badge from currentHTML
+          //const updatedHTML = currentHTML.replace(updatedBadgeHTML, "");
+          //return updatedHTML;
+          // }
+          //};
+          //}
+          //awardsContainer.innerHTML = setCurrentBadge(badge, prevAwardsContainerHTML);
+          //(showBadge) ? awardsContainer.childNodes[badge.index].children[badge.index].setAttribute("width", badge.width) : "";
+
         },
         // TODO: update pronouns to be predefined and togglable
         insertPronoun(index) {
@@ -1242,7 +1296,34 @@
         },
         triggerModal() {
           return this.modelIsOpen = !this.modelIsOpen;
-        }
+        },
+        getAwardHTML(award) {
+          if (!award || !award.html || typeof award.width !== "number") return "";
+          const domParser = new DOMParser();
+          const doc = domParser.parseFromString(award.html, "text/html");
+          const img = doc.querySelector("img");
+
+          if (img) {
+            img.width = award.width;
+            return (award.showLink) ? `<a href="${award.link}" target="_blank" rel="noopener noreferrer">${img.outerHTML}</a>` : img.outerHTML;
+          }
+          return "";
+        },
+        activeAwardsStyle() {
+          return {
+            lineHeight: '1.2',
+            colorScheme: 'light',
+            color: 'rgb(33, 33, 33)',
+            fontFamily: 'Arial',
+            fontSize: '12px',
+            paddingTop: '24px',
+          }
+        },
+        inactiveAwardsStyle() {
+          return {
+
+          };
+        },
       },
       computed: {
         existingSigLoaded() {
@@ -1265,10 +1346,20 @@
           );
           return this.pronouns.length > 0 && containsPronoun;
         },
+        areAwardsActive() {
+          const { candid, cfre } = this.awards;
+          return (candid && candid.active) || (cfre && cfre.active);
+        },
       },
       watch: {
         // watcher for award badge, used for first load
         'awards.candid': {
+          handler: function (after, before) {
+            this.handleBadges(after)
+          },
+          deep: true,
+        },
+        'awards.cfre': {
           handler: function (after, before) {
             this.handleBadges(after)
           },
