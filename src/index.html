@@ -197,11 +197,6 @@
               <input class="form-check-input input--hidden" type="checkbox" name="badgeCFRE" value=""
                 id="btn-badge-cfre" v-model="awards.cfre.active" /><span class=" btn-pill">CFRE</span>
             </label>
-            <!-- <div class="badge-preview"><a class="twr__footer__award guidestar-candid"
-                href="https://www.guidestar.org/profile/shared/6ded106f-e539-4e96-bc40-060c7e3d1bdf"
-                target="_blank"><img src="https://widgets.guidestar.org/TransparencySeal/9364116">
-              </a>
-            </div> -->
           </div>
           <div class="mb-3">
             <label for="disclaimer" class="form-label">Disclaimer</label>
@@ -682,15 +677,6 @@
                                   </tr>
                                 </table>
                               </td>
-
-                              <!-- <td>
-
-                                <table id="awards-container" class="js-awards"
-                                  :style="areAwardsActive ? activeAwardsStyle() : inactiveAwardsStyle()" border="0"
-                                  cellpadding="0" cellspacing="0">
-                                  <tr></tr>
-                                </table>
-                              </td> -->
                             </tr>
                             <tr>
                               <td id="disclaimerText" class="js-disclaimer"
@@ -1184,43 +1170,6 @@
           this.dTxtItem = e.target.id;
           this.disclaimer = (disclaimerHasText) ? txt.replace(/\n\s+/g, '') : "";
         },
-        // Handle badges
-        handleBadges(badge) {
-          //const hiddenStyles = "";
-          //const checkboxChecked = badge.active === true
-          //const showBadge = badge.active = (checkboxChecked) ? true : false;
-          //const awardsContainer = document.getElementById("awards-container");
-          //const prevAwardsContainerHTML = awardsContainer.innerHTML;
-          //const awardsContainerEmpty = prevAwardsContainerHTML === "";
-
-          //const setCurrentBadge = (badge, currentHTML) => {
-          //const domParser = new DOMParser();
-          //const doc = domParser.parseFromString(badge.html, "text/html");
-          //const td = doc.querySelector("td");
-
-          //if (td) {
-          //const img = td.querySelector("img");
-          //if (img) {
-          //img.width = badge.width;
-          //}
-
-          //const updatedBadgeHTML = td.outerHTML;
-
-          //if (showBadge) {
-          // Combine the badge with currentHTML
-          //const combinedHTML = currentHTML + updatedBadgeHTML;
-          //return combinedHTML;
-          //} else {
-          // Remove the badge from currentHTML
-          //const updatedHTML = currentHTML.replace(updatedBadgeHTML, "");
-          //return updatedHTML;
-          // }
-          //};
-          //}
-          //awardsContainer.innerHTML = setCurrentBadge(badge, prevAwardsContainerHTML);
-          //(showBadge) ? awardsContainer.childNodes[badge.index].children[badge.index].setAttribute("width", badge.width) : "";
-
-        },
         // TODO: update pronouns to be predefined and togglable
         insertPronoun(index) {
           // add new pronoun and pronoun increment id
@@ -1350,21 +1299,6 @@
           const { candid, cfre } = this.awards;
           return (candid && candid.active) || (cfre && cfre.active);
         },
-      },
-      watch: {
-        // watcher for award badge, used for first load
-        'awards.candid': {
-          handler: function (after, before) {
-            this.handleBadges(after)
-          },
-          deep: true,
-        },
-        'awards.cfre': {
-          handler: function (after, before) {
-            this.handleBadges(after)
-          },
-          deep: true,
-        }
       },
       async mounted() {
         if (windowUrl.search !== "") {
